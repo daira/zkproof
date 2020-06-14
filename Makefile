@@ -1,4 +1,4 @@
-LATEX=latexmk --halt-on-error --file-line-error
+LATEX=latexmk --halt-on-error --file-line-error -bibtex -pdf -e '$$max_repeat=8'
 
 all: .Makefile.uptodate
 	$(MAKE) spec

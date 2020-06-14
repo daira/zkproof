@@ -10,6 +10,7 @@
 \usepackage{hhline}
 \usepackage{fix-cm}
 \usepackage{stackengine}
+\usepackage{pict2e}
 \usepackage[usenames,dvipsnames]{xcolor}
 
 \usepackage[unicode,bookmarksnumbered,bookmarksopen,allbordercolors=MidnightBlue,
@@ -18,7 +19,7 @@
 \usepackage[amsmath,amsthm,thmmarks,hyperref]{ntheorem}
 
 \usepackage{silence}
-\WarningFilter{latex}{Reference}
+%\WarningFilter{latex}{Reference}
 \WarningFilter{latex}{Citation}
 \WarningFilter{latex}{Hyper reference}
 
@@ -30,49 +31,195 @@
             backref=true,backrefstyle=none,backend=biber]{biblatex}
 \addbibresource{spec.bib}
 
+\DeclareLabelalphaTemplate{
+  \labelelement{\field{citekey}}
+}
+
+\DefineBibliographyStrings{english}{
+  page  = {page},
+  pages = {pages},
+  backrefpage = {\mbox{$\uparrow$ p\!}},
+  backrefpages = {\mbox{$\uparrow$ p\!}}
+}
+
 % Fonts
 \usepackage{lmodern}
 \usepackage[bb=ams]{mathalfa}
+
+% We just want one ampersand symbol from boisik.
+\DeclareSymbolFont{bskadd}{U}{bskma}{m}{n}
+\DeclareFontFamily{U}{bskma}{\skewchar\font130 }
+\DeclareFontShape{U}{bskma}{m}{n}{<->bskma10}{}
+\DeclareMathSymbol{\binampersand}{\mathbin}{bskadd}{"EE}
+
+% $v$ is too close to $u$.
+% <https://tex.stackexchange.com/questions/130569/sharp-or-angled-v-in-math-mode-varv>
+\DeclareSymbolFont{matha}{OML}{txmi}{m}{it}
+\DeclareMathSymbol{\varv}{\mathord}{matha}{118}
+
+% Circled asterisk.
+\DeclareSymbolFont{AMSm}{U}{ntxsym}{m}{n}
+\SetSymbolFont{AMSm}{bold}{U}{ntxsym}{b}{n}
+\DeclareFontSubstitution{U}{ntxsym}{m}{n}
+\DeclareMathSymbol{\circledast}{\mathbin}{AMSm}{254}
 
 % Theorems and lemmata are numbered together and consecutively within a subsection.
 \newtheorem{theorem}{Theorem}[subsection]
 \newtheorem{lemma}[theorem]{Lemma}
 
+\setlist[enumerate]{itemsep=0.3ex,before=\vspace{-1.2ex}}
+\setlist[itemize]{itemsep=0.3ex,topsep=0.2ex,before=\vspace{-0.8ex},after=\vspace{0.5ex}}
+
 \newlist{formulae}{itemize}{3}
-\setlist[formulae]{itemsep=0.2ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{1.5ex}}
+\setlist[formulae]{itemsep=0.2ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{0.5ex}}
+
+\newlist{algorithm}{itemize}{3}
+\setlist[algorithm]{itemsep=0ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{0.5ex}}
+
+\newlist{poetry}{itemize}{3}
+\setlist[poetry]{itemsep=-0.5ex,topsep=0ex,leftmargin=0em,label=}
+
+\setlength{\oddsidemargin}{-0.25in}
+\setlength{\textwidth}{7in}
+\setlength{\topmargin}{-0.75in}
+\setlength{\textheight}{9.2in}
+\setlength{\parindent}{0ex}
+
+\hfuzz=1pt
+\vfuzz=2pt
+\overfullrule=2cm
+
+% Use rubber lengths between paragraphs to improve default pagination.
+% <https://tex.stackexchange.com/questions/17178/vertical-spacing-pagination-and-ideal-results>
+\setlength{\parskip}{1.5ex plus 2pt minus 2pt}
+
+\newcommand{\defaultarraystretch}{1.4}
+\renewcommand{\arraystretch}{\defaultarraystretch}
 
 \mathchardef\mhyphen="2D
 
+\newcommand{\lrarrow}{\texorpdfstring{$\leftrightarrow$}{↔}}
+
+% <https://tex.stackexchange.com/a/235120/78411>
+\makeatletter
+\newcommand*\bigcdot{\mathpalette\bigcdot@{.5}}
+\newcommand*\bigcdot@[2]{\mathbin{\vcenter{\hbox{\scalebox{#2}{$\m@th#1\bullet$}}}}}
+\makeatother
+
+% <https://tex.stackexchange.com/a/269020/78411>, with explicit size parameter
+\makeatletter
+\newcommand*{\bigboxplus}[1]{\mathop{\mathpalette\big@boxplus{#1}\relax}\slimits@}
+\newcommand*{\bigboxminus}[1]{\mathop{\mathpalette\big@boxminus{#1}\relax}\slimits@}
+\newcommand*{\bigdiamondplus}[1]{\mathop{\mathpalette\big@diamondplus{#1}\relax}\slimits@}
+\newcommand*{\bigdiamondminus}[1]{\mathop{\mathpalette\big@diamondminus{#1}\relax}\slimits@}
+\newcommand*{\bigvartimes}[1]{\mathop{\mathpalette\big@vartimes{#1}\relax}\slimits@}
+
+\newcommand{\big@boxplus}[2]{%
+  \vcenter{\m@th\bigbox@thickness{#1}\hbox{%
+    \setlength{\unitlength}{#2}%
+    \begin{picture}(1,1)
+    \polyline(0.1,0.1)(0.9,0.1)(0.9,0.9)(0.1,0.9)(0.1,0.1)(0.5,0.1)
+    \polyline(0.5,0.1)(0.5,0.9)
+    \polyline(0.1,0.5)(0.9,0.5)
+    \end{picture}}}}
+
+\newcommand{\big@boxminus}[2]{%
+  \vcenter{\m@th\bigbox@thickness{#1}\hbox{%
+    \setlength{\unitlength}{#2}%
+    \begin{picture}(1,1)
+    \polyline(0.1,0.1)(0.9,0.1)(0.9,0.9)(0.1,0.9)(0.1,0.1)(0.5,0.1)
+    \polyline(0.1,0.5)(0.9,0.5)
+    \end{picture}}}}
+
+\newcommand{\big@diamondplus}[2]{%
+  \vcenter{\m@th\bigbox@thickness{#1}\hbox{%
+    \setlength{\unitlength}{#2}%
+    \begin{picture}(1,1)
+    \polyline(0,0.5)(0.5,0)(1,0.5)(0.5,1)(0,0.5)(0.5,0)
+    \polyline(0.5,0)(0.5,1)
+    \polyline(0,0.5)(1,0.5)
+    \end{picture}}}}
+
+\newcommand{\big@diamondminus}[2]{%
+  \vcenter{\m@th\bigbox@thickness{#1}\hbox{%
+    \setlength{\unitlength}{#2}%
+    \begin{picture}(1,1)
+    \polyline(0,0.5)(0.5,0)(1,0.5)(0.5,1)(0,0.5)(0.5,0)
+    \polyline(0,0.5)(1,0.5)
+    \end{picture}}}}
+
+\newcommand{\big@vartimes}[2]{%
+  \vcenter{\m@th\bigbox@thickness{#1}\hbox{%
+    \setlength{\unitlength}{#2}%
+    \begin{picture}(1,1)
+    \polyline(0.2,0.08)(0.8,1)
+    \polyline(0.2,1)(0.8,0.08)
+    \end{picture}}}}
+
+\newcommand{\bigbox@thickness}[1]{%
+  \ifx#1\displaystyle
+    \linethickness{0.2ex}%
+  \else
+    \ifx#1\textstyle
+      \linethickness{0.16ex}%
+    \else
+      \ifx#1\scriptstyle
+        \linethickness{0.12ex}%
+      \else
+        \linethickness{0.1ex}%
+      \fi
+    \fi
+  \fi
+}
+\makeatother
+
 
 \newcommand{\doctitle}{SNARK-friendly primitives (draft)}
+\newcommand{\docauthors}{Daira Hopwood, SNARK-friendly primitives Working Group}
+
 \hypersetup{
   pdfborderstyle={/S/U/W 0.7},
   pdfinfo={
     Title={\doctitle},
-    Author={Daira Hopwood, SNARK-friendly primitives Working Group},
+    Author={\docauthors}
   }
 }
 
 
 \newcommand{\crossref}[1]{\autoref{#1}}
 
+\renewcommand{\appendixautorefname}{Appendix}
+\renewcommand{\sectionautorefname}{Section}
+\renewcommand{\subsectionautorefname}{Section}
+\renewcommand{\subsubsectionautorefname}{Section}
+\renewcommand{\paragraphautorefname}{Section}
+\renewcommand{\subparagraphautorefname}{Section}
+
+\newcommand{\callout}[1]{\vspace{2ex plus 2pt minus 2pt}\noindent\textbf{#1}\hspace{1em}}
+\newcommand{\securityrequirement}[1]{\callout{Security requirement:}{#1}}
+\newenvironment{securityrequirements}{\callout{Security requirements:}\begin{itemize}}{\end{itemize}}
+\newcommand{\pnote}[1]{\callout{Note:}{#1}}
+\newenvironment{pnotes}{\callout{Notes:}\begin{itemize}}{\end{itemize}}
+\newcommand{\nnote}[1]{\callout{Non-normative note:}{#1}}
+\newenvironment{nnotes}{\callout{Non-normative notes:}\begin{itemize}}{\end{itemize}}
+\newcommand{\fact}[1]{\callout{Fact:}{#1}}
+\newcommand{\facts}[1]{\callout{Facts:}{#1}}
+
+
 % Conventions
 
+\newcommand{\mhspace}[1]{\mbox{\hspace{#1}}}
 \newcommand{\tab}{\hspace{1.5em}}
 \newcommand{\typecolon}{:}
 \newcommand{\hairspace}{~\!}
 \newcommand{\bytes}[1]{\underline{\raisebox{-0.3ex}{}\smash{#1}}}
-\newcommand{\zeros}[1]{[0]^{#1}}
-\newcommand{\zerobytes}[1]{[\hexint{00}]^{#1}}
-\newcommand{\ones}[1]{[1]^{#1}}
 \newcommand{\bit}{\mathbb{B}}
 \newcommand{\overlap}[2]{\rlap{#2}\hspace{#1}{#2}}
 \newcommand{\plap}[2]{\rlap{\hphantom{#2}}{#1}}
-\newcommand{\byte}{\mathbb{B}\kern -0.1em\raisebox{0.55ex}{\overlap{0.0001em}{\scalebox{0.7}{$\mathbb{Y}$}}}}
+\newcommand{\byte}{\mathbb{B}\kern -0.1em\raisebox{0.48ex}{\overlap{0.0001em}{\scalebox{0.7}{$\mathbb{Y}$}}}}
 \newcommand{\Nat}{\mathbb{N}}
 \newcommand{\PosInt}{\mathbb{N}^+}
 \newcommand{\Int}{\mathbb{Z}}
-\newcommand{\Rat}{\mathbb{Q}}
 \newcommand{\Field}[1]{\mathbb{F}_{\!#1}}
 \newcommand{\Fieldstar}[1]{\mathbb{F}^\ast_{#1}}
 \newcommand{\typeexp}[2]{{#1}\vphantom{)}^{[{#2}]}}
@@ -97,18 +244,11 @@
 \newcommand{\caseotherwise}{\squash\text{otherwise}}
 \newcommand{\sorted}{\mathsf{sorted}}
 \newcommand{\length}{\mathsf{length}}
-\newcommand{\truncate}[1]{\mathsf{truncate}_{#1}}
-\newcommand{\mean}{\mathsf{mean}}
-\newcommand{\median}{\mathsf{median}}
-\newcommand{\bound}[2]{\mathsf{bound\,}_{#1}^{#2}}
-\newcommand{\Lower}{\mathsf{lower}}
-\newcommand{\Upper}{\mathsf{upper}}
 \newcommand{\bitlength}{\mathsf{bitlength}}
 \newcommand{\size}{\mathsf{size}}
 \newcommand{\mantissa}{\mathsf{mantissa}}
 \newcommand{\hexint}[1]{\mathtt{0x{#1}}}
 \newcommand{\ascii}[1]{\textbf{``\texttt{#1}''}}
-\newcommand{\Justthebox}[2][-1.8ex]{\raisebox{#1}{\;\usebox{#2}\;}}
 \newcommand{\setof}[1]{\{{#1}\}}
 \newcommand{\bigsetof}[1]{\left\{{#1}\right\}}
 \newcommand{\powerset}[1]{\raisebox{-0.28ex}{\scalebox{1.25}{$\mathscr{P}$}}\kern -0.2em\big(\strut{#1}\big)}
@@ -132,38 +272,37 @@
 \newcommand{\ssum}[2]{\sop{#1}{#2}{\sum}}
 \newcommand{\vproduct}[2]{\vop{#1}{#2}{\prod}}
 \newcommand{\sproduct}[2]{\sop{#1}{#2}{\prod}}
-\newcommand{\vxor}[2]{\vop{#1}{#2}{\bigoplus}}
-\newcommand{\sxor}[2]{\sop{#1}{#2}{\bigoplus}}
 \newcommand{\vcombsum}[2]{\vop{#1}{#2}{\biggercombplus}}
 \newcommand{\scombsum}[2]{\sop{#1}{#2}{\bigcombplus}}
 \newcommand{\vgrpsum}[2]{\vop{#1}{#2}{\biggergrpplus}}
 \newcommand{\sgrpsum}[2]{\sop{#1}{#2}{\biggrpplus}}
 \newcommand{\xor}{\oplus}
-\newcommand{\biggercombplus}{\bigdiamondplus{4.6ex}}
-\newcommand{\bigcombplus}{\bigdiamondplus{3.3ex}}
-\newcommand{\combplus}{\bigdiamondplus{1.8ex}\,}
-\newcommand{\subcombplus}{\bigdiamondplus{1.4ex}}
+\newcommand{\biggercombplus}{\bigdiamondplus{3.2ex}}
+\newcommand{\bigcombplus}{\bigdiamondplus{2.5ex}}
+\newcommand{\combplus}{\bigdiamondplus{1.5ex}\,}
+\newcommand{\subcombplus}{\bigdiamondplus{1.2ex}}
 \newcommand{\combzero}{\Zero_{\subcombplus}}
-\newcommand{\combminus}{\bigdiamondminus{1.8ex}\,}
-\newcommand{\combneg}{\bigdiamondminus{1.8ex}}
-\newcommand{\biggergrpplus}{\bigboxplus{4.6ex}}
-\newcommand{\biggrpplus}{\bigboxplus{3.3ex}}
-\newcommand{\grpplus}{\bigboxplus{1.8ex}\,}
-\newcommand{\subgrpplus}{\bigboxplus{1.4ex}}
+\newcommand{\combminus}{\bigdiamondminus{1.5ex}\,}
+\newcommand{\combneg}{\bigdiamondminus{1.5ex}}
+\newcommand{\biggergrpplus}{\bigboxplus{3.2ex}}
+\newcommand{\biggrpplus}{\bigboxplus{2.5ex}}
+\newcommand{\grpplus}{\bigboxplus{1.5ex}\,}
+\newcommand{\subgrpplus}{\bigboxplus{1.2ex}}
 \newcommand{\grpzero}{\Zero_{\subgrpplus}}
-\newcommand{\grpminus}{\bigboxminus{1.8ex}\,}
-\newcommand{\grpneg}{\bigboxminus{1.8ex}}
-\newcommand{\vartimes}{\bigvartimes{1.8ex}}
+\newcommand{\grpminus}{\bigboxminus{1.5ex}\,}
+\newcommand{\grpneg}{\bigboxminus{1.5ex}}
+\newcommand{\vartimes}{\bigvartimes{1.5ex}}
 \newcommand{\suband}{\raisebox{-0.6ex}{\kern-0.06em\scalebox{0.65}{$\binampersand$}}}
 \newcommand{\bchoose}{\;\scalebox{1.2}[1]{\textsf{?}}\;}
 \newcommand{\rotr}{\ggg}
 \newcommand{\mult}{\cdot}
-\newcommand{\smult}{\!\cdot\!}
 \newcommand{\scalarmult}[2]{\boldsymbol{[}{#1}\boldsymbol{]}\,{#2}}
 \newcommand{\Bigscalarmult}[2]{\Big[{#1}\Big]{#2}}
 \newcommand{\Biggscalarmult}[2]{\Bigg[{#1}\Bigg]{#2}}
 % <https://tex.stackexchange.com/a/415155/78411>
 \newcommand{\clasp}[3][0pt]{\stackengine{0pt}{#3}{\kern#1#2}{O}{c}{F}{F}{L}}
+\newcommand{\yy}{\hspace{0.022em}y\hspace{0.021em}}
+\newcommand{\possqrt}[1]{\raisebox{0.3ex}{${}^+$}\hspace{-0.7em}\sqrt{#1\vphantom{b}}}
 \newcommand{\rightarrowR}{\mathop{\clasp[-0.18em]{\raisebox{1.15ex}{\scriptsize R}}{$\,\rightarrow\,$}}}
 \newcommand{\leftarrowR}{\mathop{\clasp[0.15em]{\raisebox{1.15ex}{\scriptsize R}}{$\,\leftarrow\,$}}}
 \newcommand{\union}{\cup}
@@ -174,10 +313,15 @@
 \newcommand{\constraint}[3]{\lincomb{#1}\hairspace \vartimes\hairspace \lincomb{#2}\hairspace =\hairspace \lincomb{#3}}
 \newcommand{\lconstraint}[1]{\lincomb{#1}\hairspace \vartimes\mhspace{0.25em}}
 \newcommand{\maybe}[1]{{#1} \union \setof{\bot}}
-\newcommand{\Of}[1]{\!\left({#1}\right)\!}
 
 \newcommand{\Adversary}{\mathcal{A}}
 \newcommand{\Oracle}{\mathsf{O}}
+
+
+% Hashes
+
+\newcommand{\BlakeTwob}[1]{\mathsf{BLAKE2b\kern 0.05em\mhyphen{#1}}}
+\newcommand{\BlakeTwos}[1]{\mathsf{BLAKE2s\kern 0.05em\mhyphen{#1}}}
 
 
 % PRFs
@@ -233,7 +377,76 @@
 \newcommand{\KDFOutput}{\KDFAlg\mathsf{.Output}}
 
 
+% Signatures
+
+\newcommand{\Sig}{\mathsf{Sig}}
+\newcommand{\SigPublic}{\Sig\mathsf{.Public}}
+\newcommand{\SigPrivate}{\Sig\mathsf{.Private}}
+\newcommand{\SigMessage}{\Sig\mathsf{.Message}}
+\newcommand{\SigSignature}{\Sig\mathsf{.Signature}}
+\newcommand{\SigGenPrivate}{\Sig\mathsf{.GenPrivate}}
+\newcommand{\SigGen}{\Sig\mathsf{.Gen}}
+\newcommand{\SigDerivePublic}{\Sig\mathsf{.DerivePublic}}
+\newcommand{\SigSign}[1]{\Sig\mathsf{.Sign}_{#1}}
+\newcommand{\SigValidate}[1]{\Sig\mathsf{.Validate}_{#1}}
+\newcommand{\SigRandom}{\Sig\mathsf{.Random}}
+\newcommand{\SigGenRandom}{\Sig\mathsf{.GenRandom}}
+\newcommand{\SigRandomizePublic}{\Sig\mathsf{.RandomizePublic}}
+\newcommand{\SigRandomizePrivate}{\Sig\mathsf{.RandomizePrivate}}
+\newcommand{\SigRandomizerId}{\Zero_{\SigRandom}}
+\newcommand{\SigRandomizer}{\alpha}
+\newcommand{\Entry}[1]{\mathsf{entry}_{#1}}
+\newcommand{\sk}{\mathsf{sk}}
+\newcommand{\vk}{\mathsf{vk}}
+\newcommand{\vkBytes}[1]{\bytes{\vk_{#1}}}
+
+\newcommand{\RedDSA}{\mathsf{RedDSA}}
+\newcommand{\RedDSAPublic}{\RedDSA\mathsf{.Public}}
+\newcommand{\RedDSAPrivate}{\RedDSA\mathsf{.Private}}
+\newcommand{\RedDSAMessage}{\RedDSA\mathsf{.Message}}
+\newcommand{\RedDSASignature}{\RedDSA\mathsf{.Signature}}
+\newcommand{\RedDSAGenPrivate}{\RedDSA\mathsf{.GenPrivate}}
+\newcommand{\RedDSADerivePublic}{\RedDSA\mathsf{.DerivePublic}}
+\newcommand{\RedDSASign}[1]{\RedDSA\mathsf{.Sign}_{#1}}
+\newcommand{\RedDSAValidate}[1]{\RedDSA\mathsf{.Validate}_{#1}}
+\newcommand{\RedDSABatchValidate}{\RedDSA\mathsf{.BatchValidate}}
+\newcommand{\RedDSABatchEntry}{\RedDSA\mathsf{.BatchEntry}}
+\newcommand{\RedDSARandom}{\RedDSA\mathsf{.Random}}
+\newcommand{\RedDSAGenRandom}{\RedDSA\mathsf{.GenRandom}}
+\newcommand{\RedDSARandomizePublic}{\RedDSA\mathsf{.RandomizePublic}}
+\newcommand{\RedDSARandomizePrivate}{\RedDSA\mathsf{.RandomizePrivate}}
+\newcommand{\RedDSARandomizerId}{\Zero_{\RedDSARandom}}
+\newcommand{\RedDSARandomizer}{\alpha}
+\newcommand{\RedDSASigR}[1]{R_{#1}}
+\newcommand{\RedDSASigS}[1]{S_{#1}}
+\newcommand{\RedDSAReprR}[1]{\bytes{\RedDSASigR{#1}}}
+\newcommand{\RedDSAReprS}[1]{\bytes{\RedDSASigS{#1}}}
+\newcommand{\RedDSASigc}[1]{c_{#1}}
+\newcommand{\RedDSAHash}{\mathsf{H}}
+\newcommand{\RedDSAHashToScalar}{\RedDSAHash^{\circledast}}
+\newcommand{\RedDSAHashLength}{\ell_{\RedDSAHash}}
+\newcommand{\RedDSAText}{\texorpdfstring{$\RedDSA$}{RedDSA}}
+\newcommand{\RedJubjub}{\mathsf{RedJubjub}}
+\newcommand{\RedJubjubText}{\texorpdfstring{$\RedJubjub$}{RedJubjub}}
+\newcommand{\RedJubjubHashName}{\BlakeTwob{512}}
+
+
+% Proofs
+
+\newcommand{\Groth}{\mathsf{Groth16}}
+\newcommand{\GrothS}{\Groth_{\kern 0.05em\mathbb{S}}}
+\newcommand{\GrothSProof}{\GrothS\mathsf{.Proof}}
+\newcommand{\GrothSPrimaryInput}{\GrothS\mathsf{.PrimaryInput}}
+\newcommand{\GrothSBatchEntry}{\GrothS\mathsf{.BatchEntry}}
+\newcommand{\GrothSBatchVerify}{\GrothS\mathsf{.BatchVerify}}
+\newcommand{\Proof}[1]{\pi_{\!{#1}}}
+
+
 % Elliptic curve stuff
+
+\newcommand{\enc}{\mathsf{enc}}
+\newcommand{\Repr}{\star}
+\newcommand{\MakeRepr}[2]{{#1}\rlap{\raisebox{-0.32ex}{$\Repr$}}\rule{0ex}{2.2ex}^{#2}}
 
 \newcommand{\Curve}{E}
 \newcommand{\Zero}{\mathcal{O}}
@@ -283,6 +496,7 @@
 \newcommand{\GroupGHash}[1]{\GroupHash^{\SubgroupG{}}_{#1}}
 \newcommand{\GroupGHashURSType}{\GroupHash\mathsf{.URSType}}
 \newcommand{\GroupGHashInput}{\GroupHash\mathsf{.Input}}
+\newcommand{\FindGroupGHash}{\FindGroupHash^{\SubgroupGstar{}}}
 \newcommand{\URS}{\mathsf{URS}}
 
 \newcommand{\ParamS}[1]{{{#1}_\mathbb{\hskip 0.03em S}}}
@@ -302,11 +516,6 @@
 \newcommand{\PairingS}{\ParamS{\hat{e}}}
 \newcommand{\MillerLoopS}{\ParamS{\mathsf{MillerLoop}}}
 \newcommand{\FinalExpS}{\ParamS{\mathsf{FinalExp}}}
-\newcommand{\GrothS}{\Groth_{\kern 0.05em\mathbb{S}}}
-\newcommand{\GrothSProof}{\GrothS\mathsf{.Proof}}
-\newcommand{\GrothSPrimaryInput}{\GrothS\mathsf{.PrimaryInput}}
-\newcommand{\GrothSBatchEntry}{\GrothS\mathsf{.BatchEntry}}
-\newcommand{\GrothSBatchVerify}{\GrothS\mathsf{.BatchVerify}}
 
 \newcommand{\ParamJ}[1]{{{#1}_\mathbb{\hskip 0.01em J}}}
 \newcommand{\ParamJexp}[2]{{{#1}_\mathbb{\hskip 0.01em J}\!}^{#2}}
@@ -336,8 +545,18 @@
 \newcommand{\ParamMexp}[2]{{{#1}_\mathbb{\hskip 0.03em M}\!}^{#2}}
 
 \newcommand{\ctEdwards}[1]{E_{\kern 0.03em\mathsf{ctEdwards}({#1})}}
-\newcommand{\Edwards}[1]{E_{\kern 0.03em\mathsf{Edwards}({#1})}} % only in history
-\newcommand{\Montgomery}[1]{E_{\mathsf{Mont}({#1})}}
+\newcommand{\Montgomery}[1]{E_{\mathsf{Montgomery}({#1})}}
+\newcommand{\shortWeierstrass}[1]{E_{\mathsf{shortWeierstrass}({#1})}}
+\newcommand{\AffineCtEdwards}{\mathsf{AffineCtEdwards}}
+\newcommand{\AffineMontgomery}{\mathsf{AffineMontgomery}}
+\newcommand{\AffineShortWeierstrass}{\mathsf{AffineShortWeierstrass}}
+\newcommand{\CompressedCtEdwards}{\mathsf{CompressedCtEdwards}}
+\newcommand{\CompressedMontgomery}{\mathsf{CompressedMontgomery}}
+\newcommand{\CompressedShortWeierstrass}{\mathsf{CompressedShortWeierstrass}}
+
+\newcommand{\BNPairing}{\mathsf{BN\mhyphen254}}
+\newcommand{\BLSPairing}{\mathsf{BLS12\mhyphen381}}
+\newcommand{\JubjubCurve}{\mathsf{Jubjub}}
 
 \newcommand{\pack}{\mathsf{pack}}
 
@@ -361,20 +580,19 @@
 \newcommand{\FEtoIP}{\mathsf{FE2IP}}
 \newcommand{\FEtoIPP}{\mathsf{FE2IPP}}
 \newcommand{\ItoLEBSP}[1]{\mathsf{I2LEBSP}_{#1}}
-\newcommand{\ItoLEBSPOf}[2]{\ItoLEBSP{#1}\!\left({#2}\right)}
 \newcommand{\ItoBEBSP}[1]{\mathsf{I2BEBSP}_{#1}}
-\newcommand{\ItoBEBSPOf}[2]{\ItoBEBSP{#1}\!\left({#2}\right)}
+\newcommand{\ItoLEOSP}[1]{\mathsf{I2LEOSP}_{#1}}
+\newcommand{\ItoBEOSP}[1]{\mathsf{I2BEOSP}_{#1}}
 \newcommand{\LEBStoIP}[1]{\mathsf{LEBS2IP}_{#1}}
-\newcommand{\LEBStoIPOf}[2]{\LEBStoIP{#1}\!\left({#2}\right)}
 \newcommand{\LEOStoIP}[1]{\mathsf{LEOS2IP}_{#1}}
-\newcommand{\LEOStoIPOf}[2]{\LEOStoIP{#1}\!\left({#2}\right)}
 \newcommand{\LEBStoOSP}[1]{\mathsf{LEBS2OSP}_{#1}}
-\newcommand{\LEBStoOSPOf}[2]{\LEBStoOSP{#1}\!\left({#2}\right)}
 \newcommand{\LEOStoBSP}[1]{\mathsf{LEOS2BSP}_{#1}}
-\newcommand{\LEOStoBSPOf}[2]{\LEOStoBSP{#1}\!\left({#2}\right)}
 
+\newcommand{\DecompressValidate}{\mathsf{DecompressValidate}}
 \newcommand{\MontToCtEdwards}{\mathsf{MontToCtEdwards}}
 \newcommand{\CtEdwardsToMont}{\mathsf{CtEdwardsToMont}}
+\newcommand{\MontgomeryToCtEdwards}{\mathsf{MontgomeryToCtEdwards}}
+\newcommand{\CtEdwardsToMontgomery}{\mathsf{CtEdwardsToMontgomery}}
 \newcommand{\AffineCtEdwardsJubjub}{\mathsf{AffineCtEdwardsJubjub}}
 \newcommand{\AffineMontJubjub}{\mathsf{AffineMontJubjub}}
 \newcommand{\CompressedCtEdwardsJubjub}{\mathsf{CompressedCtEdwardsJubjub}}
@@ -393,34 +611,41 @@
 \newcommand{\PedersenRangeOffset}{\mathsf{\Delta}}
 \newcommand{\Sign}{\mathsf{\Theta}}
 
+\newcommand{\ValueCommitAlg}{\mathsf{ValueCommit}}
+\newcommand{\ValueCommit}[1]{\ValueCommitAlg_{#1}}
+\newcommand{\ValueCommitTrapdoor}{\ValueCommitAlg\mathsf{.Trapdoor}}
+\newcommand{\ValueCommitGenTrapdoor}{\ValueCommitAlg\mathsf{.GenTrapdoor}}
+\newcommand{\ValueCommitInput}{\ValueCommitAlg\mathsf{.Input}}
+\newcommand{\ValueCommitOutput}{\ValueCommitAlg\mathsf{.Output}}
+\newcommand{\ValueCommitValueBase}{\mathcal{V}}
+\newcommand{\ValueCommitRandBase}{\mathcal{R}}
+\newcommand{\ValueCommitRand}{\mathsf{r}}
+
 
 \begin{document}
 
 \title{\doctitle}
-\author{Daira Hopwood}
+\author{\docauthors}
 \date{\today}
 \maketitle
 
 \begin{abstract}
-\normalsize \noindent \textbf{Abstract.}
-
 This document was prepared as a starting point for the SNARK-friendly primitives Working Group,
 which aims to standardize cryptographic primitives for use in SNARKs.
 \end{abstract}
 
 
-\section{Introduction}
+\section{Introduction} \label{introduction}
 
 TODO
 
-\section{Notation}
+\section{Notation} \label{notation}
 
 $\bit$ means the type of bit values, i.e.\ $\setof{0, 1}$.
 $\byte$ means the type of byte values, i.e.\ $\range{0}{255}$.
 
 $\Nat$ means the type of nonnegative integers. $\PosInt$~means
 the type of positive integers. $\Int$~means the type of integers.
-$\Rat$~means the type of rationals.
 
 $x \typecolon T$ is used to specify that $x$ has type $T$.
 A cartesian product type is denoted by $S \times T$, and a function type
@@ -469,18 +694,12 @@ $\byteseqs$ means the type of byte sequences of arbitrary length.
 
 $\length(S)$ means the length of (number of elements in) $S$.
 
-$\truncate{k}(S)$ means the sequence formed from the first $k$ elements of $S$.
-
 $\hexint{}$ followed by a string of $\mathtt{monospace}$ hexadecimal
 digits means the corresponding integer converted from hexadecimal.
-$\zerobytes{\ell}$ means the sequence of $\ell$ zero bytes.
 
 $\ascii{...}$ means the given string represented as a
 sequence of bytes in US-ASCII. For example, $\ascii{abc}$ represents the
 byte sequence $[ \hexint{61}, \hexint{62}, \hexint{63} ]$.
-
-$\zeros{\ell}$ means the sequence of $\ell$ zero bits.
-$\ones{\ell}$ means the sequence of $\ell$ one bits.
 
 $a..b$, used as a subscript, means the sequence of values
 with indices $a$ through $b$ inclusive. For example,
@@ -491,16 +710,16 @@ $b$ inclusive.
 
 $\listcomp{f(x) \for x \from a \upto b}$ means the sequence
 formed by evaluating $f$ on each integer from $a$ to $b$ inclusive, in
-ascending order. Similarly, $\listcomp{f(x) \for x \from a \downto b}$ means
+ascending order.
+
+Similarly, $\listcomp{f(x) \for x \from a \downto b}$ means
 the sequence formed by evaluating $f$ on each integer from $a$ to $b$
 inclusive, in descending order.
 
 $a \bconcat b$ means the concatenation of sequences $a$ then $b$.
 
 $\concatbits(S)$ means the sequence of bits obtained by
-concatenating the elements of $S$ viewed as bit sequences. If the
-elements of $S$ are byte sequences, they are converted to bit sequences
-with the \emph{most significant} bit of each byte first.
+concatenating the elements of $S$ viewed as bit sequences.
 
 $\Field{n}$ means the finite field with $n$ elements, and
 $\Fieldstar{n}$ means its group under multiplication (which excludes $0$).
@@ -521,22 +740,18 @@ $\Field{n}[z]$ means the ring of polynomials over $z$ with coefficients
 in $\Field{n}$.
 
 $a + b$ means the sum of $a$ and $b$. This may refer to addition of
-integers, rationals, finite field elements, or group elements
-according to context.
+integers, finite field elements, or group elements according to context.
 
-$-a$ means the value of the appropriate integer, rational,
-finite field, or group type such that $(-a) + a = 0$
-(or when $a$ is an element of a group $\GroupG{}$, $(-a) + a = \ZeroG{}$),
-and $a - b$ means $a + (-b)$.
+$-a$ means the value of the appropriate integer, finite field, or group type
+such that $(-a) + a = 0$ (or when $a$ is an element of a group $\GroupG{}$,
+$(-a) + a = \ZeroG{}$), and $a - b$ means $a + (-b)$.
 
-$a \mult b$ means the product of multiplying $a$ and $b$.
-This may refer to multiplication of integers, rationals, or
-finite field elements according to context (this notation is not
-used for group elements).
+$a \mult b$ means the product of multiplying $a$ and $b$. This may refer to
+multiplication of integers or finite field elements according to context
+(this notation is not used for group elements).
 
-$a / b$, also written $\frac{a}{b}$, means the value of the
-appropriate integer, rational, or finite field type such that
-$(a / b) \mult b = a$.
+$a / b$, also written $\frac{a}{b}$, means the value of the appropriate
+integer or finite field type such that $(a / b) \mult b = a$.
 
 $a \bmod q$, for $a \typecolon \Nat$ and $q \typecolon \PosInt$,
 means the remainder on dividing $a$ by $q$. (This usage does not
@@ -547,17 +762,12 @@ $a \xor b$ means the bitwise-exclusive-or of $a$ and $b$,
 and $a \land b$ means the bitwise-and of $a$ and $b$. These are
 defined on integers or (equal-length) bit sequences according to context.
 
-\vspace{-0.5ex}
-$\!\vsum{i=1}{n} a_i$ means the sum of $a_{\alln{}}$.\;
-$\vproduct{i=1}{n} a_i$ means the product of $a_{\alln{}}$.\;
-$\vxor{i=1}{n} a_i$ means the bitwise exclusive-or of $a_{\alln{}}$.
-
+$\!\ssum{i=1}{n} a_i$ means the sum of $a_{\alln{}}$.
+$\sproduct{i=1}{n} a_i$ means the product of $a_{\alln{}}$.
 When $N = 0$ these yield the appropriate neutral element, i.e.
-$\ssum{i=1}{0} a_i = 0$, $\sproduct{i=1}{0} a_i = 1$, and
-$\sxor{i=1}{0} a_i = 0$ or the all-zero bit sequence of length given
-by the type of $a$.
+$\ssum{i=1}{0} a_i = 0$ and $\sproduct{i=1}{0} a_i = 1$.
 
-$\sqrt{a}$, where $a \typecolon \Field{q}$, means the positive
+$\possqrt{a}$, where $a \typecolon \Field{q}$, means the positive
 (i.e.\ in the range $\range{0}{\frac{q-1}{2}}$)
 square root of $a$ in $\Field{q}$. It is only used in cases where the
 square root must exist.
@@ -581,8 +791,7 @@ The convention of affixing $\Repr$ to a variable name is used
 for variables that denote bit-sequence representations of group elements.
 
 The binary relations $<$, $\leq$, $=$, $\geq$, and $>$ have their conventional
-meanings on integers and rationals, and are defined lexicographically on
-sequences of integers.
+meanings on integers, and are defined lexicographically on sequences of integers.
 
 $\floor{x}$ means the largest integer $\leq x$.
 $\ceiling{x}$ means the smallest integer $\geq x$.
@@ -594,10 +803,10 @@ The symbol $\bot$ is used to indicate unavailable information, or a failed
 decryption or validity check.
 
 We use the abbreviation ``ctEdwards'' to refer to complete Twisted Edwards curves
-and coordinates (see \crossref{jubjub}).
+and coordinates (see \crossref{curves}).
 
 
-\section{Abstract Cryptographic Schemes}
+\section{Abstract Cryptographic Schemes} \label{schemes}
 
 \subsection{Hash Functions} \label{hash}
 
@@ -636,7 +845,7 @@ be a function satisfying the following security requirements.
 
 \begin{securityrequirements}[leftmargin=2em]
   \item \textbf{Computational hiding:} For all $x, x' \typecolon \CommitInput$,
-        the distributions $\{\, \Commit{r}(x) \;|\; r \leftarrowR \CommitGenTrapdoor() \,\}$
+        distributions $\{\, \Commit{r}(x) \;|\; r \leftarrowR \CommitGenTrapdoor() \,\}$
         and $\{\, \Commit{r}(x') \;|\; r \leftarrowR \CommitGenTrapdoor() \,\}$ are
         computationally indistinguishable.
   \item \textbf{Computational binding:} It is infeasible to find
@@ -693,7 +902,7 @@ private key and base point.
 Let $\KAAgree \typecolon \KAPrivate \times \KAPublic \rightarrow \KASharedSecret$
 be the agreement function.
 
-\sapling{Optional:} Let $\KABase \typecolon \KAPublic$ be a public base point.
+Optional: Let $\KABase \typecolon \KAPublic$ be a public base point.
 
 \pnote{The range of $\KADerivePublic$ may be a strict subset of $\KAPublic$.}
 
@@ -722,19 +931,19 @@ A \emph{signature scheme} $\Sig$ defines:
 
 \begin{itemize}
   \item a type of signing keys $\SigPrivate$;
-  \item a type of verifying keys $\SigPublic$;
+  \item a type of validating keys $\SigPublic$;
   \item a type of messages $\SigMessage$;
   \item a type of signatures $\SigSignature$;
   \item a randomized signing key generation algorithm $\SigGenPrivate \typecolon () \rightarrowR \SigPrivate$;
-  \item an injective verifying key derivation algorithm $\SigDerivePublic \typecolon \SigPrivate \rightarrow \SigPublic$;
+  \item an injective validating key derivation algorithm $\SigDerivePublic \typecolon \SigPrivate \rightarrow \SigPublic$;
   \item a randomized signing algorithm $\SigSign{} \typecolon \SigPrivate \times \SigMessage \rightarrowR \SigSignature$;
-  \item a verifying algorithm $\SigVerify{} \typecolon \SigPublic \times \SigMessage \times \SigSignature \rightarrow \bit$;
+  \item a validating algorithm $\SigValidate{} \typecolon \SigPublic \times \SigMessage \times \SigSignature \rightarrow \bit$;
 \end{itemize}
 
 such that for any signing key $\sk \leftarrowR \SigGenPrivate()$ and corresponding
-verifying key $\vk = \SigDerivePublic(\sk)$, and
+validating key $\vk = \SigDerivePublic(\sk)$, and
 any $m \typecolon \SigMessage$ and $s \typecolon \SigSignature \leftarrowR \SigSign{\sk}(m)$,
-$\SigVerify{\vk}(m, s) = 1$.
+$\SigValidate{\vk}(m, s) = 1$.
 
 TODO: security properties, e.g. existential and strong unforgeability under chosen message attack.
 
@@ -771,15 +980,11 @@ such that:
         \end{formulae}
 \end{itemize}
 
-The following security requirement for such \signatureSchemes is based on that
+The following security requirement for such signature schemes is based on that
 given in \cite[section 3]{FKMSSS2016}. Note that we require Strong Unforgeability
 with Re-randomized Keys, not Existential Unforgeability with Re-randomized Keys
 (the latter is called ``Unforgeability under Re-randomized Keys'' in
-\cite[Definition 8]{FKMSSS2016}). Unlike the case for $\JoinSplitSig$, we require
-security under adaptive chosen message attack with multiple messages signed using
-a given key. (Although each \note uses a different re-randomized key pair, the same
-original key pair can be re-randomized for multiple \notes, and also it can happen
-that multiple \transactions spending the same \note are revealed to an adversary.)
+\cite[Definition 8]{FKMSSS2016}).
 
 \securityrequirement{\textbf{Strong Unforgeability with Re-randomized Keys under adaptive Chosen Message Attack (SURK-CMA)}
 
@@ -801,7 +1006,7 @@ that records queried messages and corresponding signatures.
 For random $\sk \leftarrowR \SigGenPrivate()$ and $\vk = \SigDerivePublic(\sk)$, it must be
 infeasible for an adversary given $\vk$ and a new instance of $\Oracle_{\sk}$ to find
 $(m', \sigma', \SigRandomizer')$ such that
-$\SigVerify{\SigRandomizePublic(\SigRandomizer', \vk)}(m', \sigma') = 1$ and
+$\SigValidate{\SigRandomizePublic(\SigRandomizer', \vk)}(m', \sigma') = 1$ and
 $(m', \sigma') \not\in \Oracle_{\sk}\mathsf{.}Q$.
 } %securityrequirement
 
@@ -823,16 +1028,16 @@ $(m', \sigma') \not\in \Oracle_{\sk}\mathsf{.}Q$.
 \end{nnotes}
 
 
-\subsubsection{Signature with Private Key to Public Key Monomorphism}{abstractsigmono}
+\subsubsection{Signature with Signing Key to Validating Key Monomorphism} \label{sigmono}
 
-A \emph{signature scheme with private key to public key monomorphism} $\Sig$ is a \signatureScheme that
+A \emph{signature scheme with signing key to validating key monomorphism} $\Sig$ is a signature scheme that
 additionally defines:
 
 \begin{itemize}
-  \item an abelian group on private keys, with operation
+  \item an abelian group on signing keys, with operation
         $\grpplus\!\! \typecolon \SigPrivate \times \SigPrivate \rightarrow \SigPrivate$ and
         identity $\grpzero$;
-  \item an abelian group on public keys, with operation
+  \item an abelian group on validating keys, with operation
         $\combplus\!\! \typecolon \SigPublic \times \SigPublic \rightarrow \SigPublic$ and
         identity $\combzero$.
 \end{itemize}
@@ -841,7 +1046,7 @@ such that for any $\sk_{1..2} \typecolon \SigPrivate$,
 $\SigDerivePublic(\sk_1 \grpplus \sk_2) = \SigDerivePublic(\sk_1)\, \combplus \SigDerivePublic(\sk_2)$.
 
 In other words, $\SigDerivePublic$ is a monomorphism (that is, an injective homomorphism) from the
-private key group to the public key group.
+signing key group to the validating key group.
 
 For $n \typecolon \PosInt$,
 \begin{itemize}
@@ -927,7 +1132,7 @@ efficiently computable left inverse.
 }
 
 
-\subsubsection{Group Hash}
+\subsubsection{Group Hash} \label{grouphash}
 
 Given a represented subgroup $\SubgroupG{}$, a \emph{family of group hashes into the subgroup},
 denoted $\GroupGHash{}$, consists of:
@@ -949,13 +1154,13 @@ algorithm to be used. This mitigates the possibility that the group hash algorit
 been backdoored.
 
 
-\subsection{Represented Pairing}
+\subsection{Represented Pairing} \label{representedpairing}
 
 A \emph{represented pairing} $\GroupP{}$ consists of:
 
 \begin{itemize}
   \item a group order parameter $\ParamP{r} \typecolon \PosInt$ which must be prime;
-  \item two \representedSubgroups $\SubgroupP{1, 2}$, both of order $\ParamP{r}$;
+  \item two represented subgroups $\SubgroupP{1, 2}$, both of order $\ParamP{r}$;
   \item a group $\SubgroupP{T}$ of order $\ParamP{r}$, written multiplicatively with operation\,
         $\mult \typecolon \SubgroupP{T} \times \SubgroupP{T} \rightarrow \SubgroupP{T}$
         and group identity $\ParamP{\mathbf{1}}$;
@@ -967,17 +1172,17 @@ A \emph{represented pairing} $\GroupP{}$ consists of:
         \begin{itemize}
           \item (Bilinearity)\; for all $a, b \typecolon \Fieldstar{r}$,
                 $P \typecolon \SubgroupP{1}$, and $Q \typecolon \SubgroupP{2}$,\;
-                $\PairingP\Of{\scalarmult{a}{P}, \scalarmult{b}{Q}} = \PairingP\Of{P, Q}^{a \mult b}$;\, and
+                $\PairingP(\scalarmult{a}{P}, \scalarmult{b}{Q}) = \PairingP(P, Q)^{a \mult b}$;\, and
           \item (Nondegeneracy)\; there does not exist $P \typecolon \SubgroupPstar{1}$
                 such that for all $Q \typecolon \SubgroupP{2},\;
-                \PairingP\Of{P, Q} = \OneP$.
+                \PairingP(P, Q) = \OneP$.
         \end{itemize}
 \end{itemize}
 
 TODO: align with IEEE 1363.3-2013.
 
 
-\section{Elliptic Curves} \label{ec}
+\section{Elliptic Curves} \label{curves}
 
 An \emph{elliptic curve} is a kind of \emph{plane algebraic curve} over a field.
 It defines a group of \emph{points} with coordinates in the field that satisfy a
@@ -999,19 +1204,19 @@ prime $p$. $\Field{q}$ is ``non-binary'' if $p > 2$.
 A \emph{complete twisted Edwards curve}, as defined in \cite[section 4.3.4]{BL2017},
 is an elliptic curve $E$ over a non-binary $\Field{q}$, parameterized by distinct
 $a, d \typecolon \Field{q} \setminus \setof{0}$ such that $a$ is square and $d$ is nonsquare,
-with equation $E : a \smult u^2 + \varv^2 = 1 + d \smult u^2 \smult \varv^2$.
+with equation $E : a \mult u^2 + \varv^2 = 1 + d \mult u^2 \mult \varv^2$.
 We use the abbreviation ``ctEdwards'' to refer to complete twisted Edwards curves
 and coordinates.
 
 A \emph{Montgomery curve}, as defined in \cite[section 4.3]{BL2017},
 is an elliptic curve $E$ over a non-binary field $\Field{q}$, parameterized by
-$A, B \typecolon \Field{q}$ such that $B \smult (A^2 - 4) \neq 0$, with equation
-$E : B \smult y^2 = x^3 + A \smult x^2 + x$.
+$A, B \typecolon \Field{q}$ such that $B \mult (A^2 - 4) \neq 0$, with equation
+$E : B \mult y^2 = x^3 + A \mult x^2 + x$.
 
-A \emph{short Weierstrass curve} over a field $\Field{q} with $p > 3$, is an
+A \emph{short Weierstrass curve} over a field $\Field{q}$ with $p > 3$, is an
 elliptic curve over $\Field{q}$ parameterized by $a, b \typecolon \Field{q}$
-such that $4 \smult a^3 + 27 \smult b^2 \neq 0$, with equation
-$E : y^2 = x^3 + a \smult x + b$. TODO: reference
+such that $4 \mult a^3 + 27 \mult b^2 \neq 0$, with equation
+$E : y^2 = x^3 + a \mult x + b$. TODO: reference
 
 TODO: explain birational equivalence between ctEdwards and Montgomery curves.
 
@@ -1030,37 +1235,37 @@ Following the notation in \cite{BL2017} we use $(u, \varv)$ for affine coordinat
 ctEdwards curves, and $(x, y)$ for affine coordinates on Montgomery or short Weierstrass
 curves.
 
-A point $P$ is normally represented by two $\Field$ variables, which
-we name as $(P^u, P^{\vv})$ for an affine ctEdwards point, for instance.
+A point $P$ is normally represented by two $\Field{q}$ variables, which
+we name as $(P^u, P^{\varv})$ for an affine ctEdwards point, for instance.
 
 TODO: define group operations, scalar multiplication, and the elliptic curve discrete
 logarithm problem.
 
 Implementations of scalar multiplication will require the scalar to be represented
 as a bit sequence. We therefore allow the notation $\scalarmult{k\Repr}{P}$ meaning
-$\scalarmult{\LEBStoIPOf{\length(k\Repr)}{k\Repr}}{P}$. There will be no ambiguity
+$\scalarmult{\LEBStoIP{\length(k\Repr)}(k\Repr)}{P}$. There will be no ambiguity
 because variables representing bit sequences are named with a $\Repr$ suffix.
 
 We define the following types representing affine ctEdwards, affine Montgomery,
 and affine short Weierstrass coordinates respectively:
 
 \begin{tabular}{@{\hskip 2em}r@{\;}l@{\;}l}
-  $\AffineCtEdwards$  &$:= (u \typecolon \Field{q}) \times (\hspace{0.04em}\varv\hspace{0.04em} \typecolon \Field{q})$
-    &$: \ParamE{a} \smult u^2 + \varv^2 = 1 + \ParamJ{d} \smult u^2 \smult \varv^2$ \\
-  $\AffineMontgomery$ &$:= (x \typecolon \Field{q}) \times (y \typecolon \Field{q})$
-    &$: \ParamM{B} \smult y^2 = x^3 + \ParamM{A} \smult x^2 + x$
-  $\AffineShortW$     &$:= (x \typecolon \Field{q}) \times (y \typecolon \Field{q})$
-    &$: \ParamM{B} \smult y^2 = x^3 + \ParamM{A} \smult x^2 + x$
+  $\AffineCtEdwards$        &$:= (u \typecolon \Field{q}) \times (\hspace{0.04em}\varv\hspace{0.04em} \typecolon \Field{q})$
+    &$: a \mult u^2 + \varv^2 = 1 + d \mult u^2 \mult \varv^2$ \\
+  $\AffineMontgomery$       &$:= (x \typecolon \Field{q}) \times (y \typecolon \Field{q})$
+    &$: B \mult y^2 = x^3 + A \mult x^2 + x$ \\
+  $\AffineShortWeierstrass$ &$:= (x \typecolon \Field{q}) \times (y \typecolon \Field{q})$
+    &$: y^2 = x^3 + a \mult x + b$
 \end{tabular}
 
 We also define types representing compressed, \emph{not necessarily valid},
 ctEdwards, Montgomery, and short Weierstrass coordinates:
 
-\begin{formulae}
-  \item $\CompressedCtEdwards  := (\tilde{u} \typecolon \bit) \times (\varv \typecolon \Field{q})$
-  \item $\CompressedMontgomery := (x \typecolon \Field{q}) \times (\tilde{y} \typecolon \Bit)$
-  \item $\CompressedShortW     := (x \typecolon \Field{q}) \times (\tilde{y} \typecolon \Bit)$
-\end{formulae}
+\begin{tabular}{@{\hskip 2em}r@{\;}l}
+  $\CompressedCtEdwards$        &$:= (\tilde{u} \typecolon \bit) \times (\varv \typecolon \Field{q})$ \\
+  $\CompressedMontgomery$       &$:= (x \typecolon \Field{q}) \times (\tilde{y} \typecolon \bit)$ \\
+  $\CompressedShortWeierstrass$ &$:= (x \typecolon \Field{q}) \times (\tilde{y} \typecolon \bit)$
+\end{tabular}
 
 See TODO for how these types are represented as byte sequences in external encodings.
 
@@ -1089,11 +1294,11 @@ then there are no solutions for $x$.
 \end{proof}
 
 
-\subsubsection{Elliptic curves as Represented Groups} \label{ecgroup}
+\subsection{Elliptic curves as Represented Groups} \label{ecgroup}
 
 TODO
 
-\subsubsection{Pairing-friendly elliptic curves} \label{ecpairing}
+\subsection{Pairing-friendly elliptic curves} \label{ecpairing}
 
 TODO
 
@@ -1105,13 +1310,13 @@ and integers:
 
 \begin{itemize}
   \item $\ItoLEBSP{} \typecolon (\ell \typecolon \Nat) \times \binaryrange{\ell} \rightarrow \bitseq{\ell}$,
-        such that $\ItoLEBSPOf{\ell}{x}$ is the sequence of $\ell$ bits representing $x$ in
+        such that $\ItoLEBSP{\ell}(x)$ is the sequence of $\ell$ bits representing $x$ in
         little-endian order;
   \item $\LEBStoIP{} \typecolon (\ell \typecolon \Nat) \times \bitseq{\ell} \rightarrow \binaryrange{\ell}$
-        such that $\LEBStoIPOf{\ell}{S}$ is the integer represented in little-endian order by the
+        such that $\LEBStoIP{\ell}(S)$ is the integer represented in little-endian order by the
         bit sequence $S$ of length $\ell$.
   \item $\LEOStoIP{} \typecolon (\ell \typecolon \Nat \suchthat \ell \bmod 8 = 0) \times \byteseq{\ell/8} \rightarrow \binaryrange{\ell}$
-        such that $\LEOStoIPOf{\ell}{S}$ is the integer represented in little-endian order by the
+        such that $\LEOStoIP{\ell}(S)$ is the integer represented in little-endian order by the
         byte sequence $S$ of length $\ell/8$.
   \item $\LEBStoOSP{} \typecolon (\ell \typecolon \Nat) \times \bitseq{\ell} \rightarrow \byteseq{\sceiling{\ell/8}}$
         defined as follows: pad the input on the right with $8 \mult \ceiling{\ell/8} - \ell$ zero bits
@@ -1132,7 +1337,7 @@ and integers:
 
 BLAKE2 is defined by \cite{ANWW2013}. It has BLAKE2b and BLAKE2s variants.
 
-$\BlakeTwobOf{\ell}{p, x}$ refers to unkeyed $\BlakeTwob{\ell}$
+$\BlakeTwob{\ell}(p, x)$ refers to unkeyed BLAKE2b
 in sequential mode, with an output digest length of $\ell/8$ bytes,
 $16$-byte personalization string $p$, and input $x$.
 
@@ -1140,19 +1345,19 @@ $16$-byte personalization string $p$, and input $x$.
   \item $\BlakeTwob{\ell} \typecolon \byteseq{16} \times \byteseqs \rightarrow \byteseq{\ell/8}$
 \end{formulae}
 
-\pnote{
-$\BlakeTwob{\ell}$ is not the same as $\BlakeTwob{512}$ truncated to
-$\ell$ bits, because the digest length is encoded in the parameter
-block.
-}
-
-$\BlakeTwosOf{\ell}{p, x}$ refers to unkeyed $\BlakeTwos{\ell}$
+$\BlakeTwos{\ell}(p, x)$ refers to unkeyed BLAKE2s
 in sequential mode, with an output digest length of $\ell/8$ bytes,
 $8$-byte personalization string $p$, and input $x$.
 
 \begin{formulae}
   \item $\BlakeTwos{\ell} \typecolon \byteseq{8} \times \byteseqs \rightarrow \byteseq{\ell/8}$
 \end{formulae}
+
+\pnote{
+$\BlakeTwob{\ell}$ is not the same as $\BlakeTwob{512}$ truncated to $\ell$ bits,
+and similarly $\BlakeTwos{\ell}$ is not the same as $\BlakeTwos{256}$ truncated
+to $\ell$ bits, because the digest length is encoded in the parameter block.
+} %pnote
 
 
 \subsubsection{Bowe--Hopwood Pedersen Hash Function} \label{concretepedersenhash}
@@ -1167,41 +1372,34 @@ and of Mihir Bellare, Oded Goldreich, and Shafi Goldwasser in \cite{BGG1995},
 with optimizations for efficient instantiation in zk-SNARK circuits
 by Sean Bowe and Daira Hopwood.
 
-Let $\GroupG$ be a ctEdwards curve over a field $\Field{q}$, and let
-$\SubgroupG$, $\ZeroG$, $\ParamG{q}$, $\ParamG{r}$, $\ParamG{a}$, and $\ParamG{d}$
+Let $\GroupG{}$ be a ctEdwards curve over a field $\Field{q}$, and let
+$\SubgroupG{}$, $\ZeroG{}$, $\ParamG{q}$, $\ParamG{r}$, $\ParamG{a}$, and $\ParamG{d}$
 be as defined in \crossref{ecgroup}.
 
-Let $\ExtractG \typecolon \SubgroupG \rightarrow \Field{q}$ be as defined in \crossref{concreteedwardsextractor}.
+Let $\ExtractG \typecolon \SubgroupG{} \rightarrow \Field{q}$ be as defined in \crossref{concreteedwardsextractor}.
 
-Let $\FindGroupHash$ be as defined in \crossref{concretegrouphash}.
+Let $\FindGroupGHash$ be as defined in \crossref{concreteedwardsgrouphash}.
 
 Let $c$ be the largest integer such that $4 \mult \frac{2^{4 \mult c}}{15} \leq \frac{\ParamG{r}-1}{2}$.
 
-\newsavebox{\gencountbox}
-\begin{lrbox}{\gencountbox}
-\begin{bytefield}[bitwidth=0.28em]{32}
-    \sbitbox{32}{$32$-bit $i-1$}
-\end{bytefield}
-\end{lrbox}
-
-Define $\PedersenGenAlg \typecolon \byteseq{8} \times \Nat \rightarrow \SubgroupGstar$ by:
+Define $\PedersenGenAlg \typecolon \byteseq{8} \times \Nat \rightarrow \SubgroupGstar{}$ by:
 
 \begin{formulae}
-  \item $\PedersenGen{D}{i} := \FindGroupGHash\Of{D, \Justthebox{\gencountbox}}$.
+  \item $\PedersenGen{D}{i} := \FindGroupGHash(D, \LEBStoOSP{32}(\ItoLEBSP{32}(i-1)))$.
 \end{formulae}
 
 \newcommand{\sj}[1]{s^{\kern 0.02em j}_{#1}}
 
-Define $\PedersenHashToPoint(D \typecolon \byteseq{8}, M \typecolon \bitseq{\PosInt}) \rightarrow \SubgroupG$ as follows:
+Define $\PedersenHashToPoint(D \typecolon \byteseq{8}, M \typecolon \bitseq{\PosInt}) \rightarrow \SubgroupG{}$ as follows:
 
 \begin{algorithm}
   \item Pad $M$ to a multiple of $3$ bits by appending zero bits, giving $M'$.
   \item Let $n = \ceiling{\frac{\length(M')}{3 \mult c}}$.
-  \item Split $M'$ into $n$ \definingquotedterm{segments} $M_\barerange{1}{n}$
+  \item Split $M'$ into $n$ \emph{segments} $M_\barerange{1}{n}$
         so that $M' = \concatbits(M_\barerange{1}{n})$, and
-        each of $M_\barerange{1}{n-1}$ is of length $3 \smult c$ bits.
+        each of $M_\barerange{1}{n-1}$ is of length $3 \mult c$ bits.
         ($M_n$ may be shorter.)
-  \item Return $\ssum{i=1}{n} \scalarmult{\PedersenEncode{M_i}}{\PedersenGen{D}{i}} \typecolon \SubgroupG$.
+  \item Return $\ssum{i=1}{n} \scalarmult{\PedersenEncode{M_i}}{\PedersenGen{D}{i}} \typecolon \SubgroupG{}$.
 \end{algorithm}
 
 where
@@ -1210,35 +1408,38 @@ $\PedersenEncode{\paramdot} \typecolon \bitseq{3 \mult \range{1}{c}} \rightarrow
 
 \begin{algorithm}
   \item Let $k_i = \length(M_i)/3$.
-  \item Split $M_i$ into $3$-bit \definingquotedterm{chunks} $m_\barerange{1}{k_i}$
+  \item Split $M_i$ into $3$-bit \emph{chunks} $m_\barerange{1}{k_i}$
         so that $M_i = \concatbits(m_\barerange{1}{k_i})$.
   \item Write each $m_j$ as $[\sj{0}, \sj{1}, \sj{2}]$, and let
-        $\enc(m_j) = (1 - 2 \smult \sj{2}) \mult (1 + \sj{0} + 2 \smult \sj{1}) \typecolon \Int$.
+        $\enc(m_j) = (1 - 2 \mult \sj{2}) \mult (1 + \sj{0} + 2 \mult \sj{1}) \typecolon \Int$.
   \item Let $\PedersenEncode{M_i} = \ssum{j=1}{k_i} \enc(m_j) \mult 2^{4 \mult (j-1)}$.
 \end{algorithm}
 
-Finally, define $\PedersenHash \typecolon \byteseq{8} \times \bitseq{\PosInt} \rightarrow \MerkleHashSapling$ by:
+Finally, define $\PedersenHash \typecolon \byteseq{8} \times \bitseq{\PosInt} \rightarrow \bitseq{\ellG{}}$ by:
 
 \begin{formulae}
-  \item $\PedersenHash(D, M) := \ExtractG\big(\PedersenHashToPoint\Of{D, M}\kern-0.1em\big)$.
+  \item $\PedersenHash(D, M) := \ExtractG\big(\PedersenHashToPoint(D, M)\big)$.
 \end{formulae}
 
 See \crossref{cctpedersenhash} for rationale and efficient circuit implementation
 of these functions.
 
-\securityrequirement{
-$\PedersenHash$ and $\PedersenHashToPoint$ are required to be collision resistant
-between inputs of fixed length, for a given personalization input $D$.
-No other security properties commonly associated with hash functions are needed.
-}
+Assuming hardness of the Discrete Logarithm Problem on $\GroupG{}$, $\PedersenHash$ and
+$\PedersenHashToPoint$ are collision resistant between inputs \emph{of fixed length},
+for a given fixed personalization input $D$.
+
+TODO: collision resistance should hold across differing $D$ given a suitable assumption
+on $\FindGroupGHash$.
 
 \nnote{
-These hash functions are \emph{not} collision resistant for variable-length inputs.
+These hash functions are \emph{not} collision resistant for variable-length inputs,
+and no other security properties commonly associated with hash functions are guaranteed.
 }
 
-\begin{theorem}
+\vspace{2ex}
+\begin{lemma}
 If $\ExtractG$ is injective, then the encoding function $\PedersenEncode{\paramdot}$ is injective.
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
 We first check that the range of
@@ -1253,7 +1454,7 @@ integer expression.
 
 $\enc$ is injective. In order to prove that $\PedersenEncode{\paramdot}$ is injective,
 consider $\PedersenEncodeNonneg{\paramdot} \typecolon \bitseq{3 \mult \range{1}{c}} \rightarrow
-\range{0}{2 \smult \PedersenRangeOffset}$ such that
+\range{0}{2 \mult \PedersenRangeOffset}$ such that
 $\PedersenEncodeNonneg{M_i} = \PedersenEncode{M_i} + \PedersenRangeOffset$.
 With $k_i$ and $m_j$ defined as above, we have
 $\PedersenEncodeNonneg{M_i} = \ssum{j=1}{k_i} \enc'(m_j) \mult 2^{4 \mult (j-1)}$
@@ -1279,8 +1480,8 @@ TODO: use of BLAKE2 as a general hash function, PRF, and commitment scheme.
 \subsection{RedDSA} \label{reddsa}
 
 $\RedDSA$ is a Schnorr-based signature scheme, optionally supporting key re-randomization
-as described in \crossref{sigrerand}. It also supports a
-Secret Key to Public Key Monomorphism as described in \crossref{sigmono}.
+as described in \crossref{sigrerand}. It also supports a signing key to validating key
+monomorphism as described in \crossref{sigmono}.
 It is based on a scheme from \cite[section 3]{FKMSSS2016}, with some ideas from
 EdDSA \cite{BJLSY2015}.
 
@@ -1300,7 +1501,7 @@ Its parameters are:
   \item $\GenG{}$, a generator of $\SubgroupG{}$;
   \item a bit-length $\RedDSAHashLength \typecolon \Nat$ such that
         $2^{\RedDSAHashLength-128} \geq \ParamG{r}$ and $\RedDSAHashLength \bmod 8 = 0$;
-  \item a cryptographic \hashFunction $\RedDSAHash \typecolon \byteseqs \rightarrow \byteseq{\RedDSAHashLength/8}$.
+  \item a cryptographic hash function $\RedDSAHash \typecolon \byteseqs \rightarrow \byteseq{\RedDSAHashLength/8}$.
 \end{itemize}
 
 Its associated types are defined as follows:
@@ -1317,19 +1518,16 @@ Define $\RedDSAHashToScalar \typecolon \byteseqs \rightarrow \Field{\ParamG{r}}$
   \item $\RedDSAHashToScalar(B) = \LEOStoIP{\RedDSAHashLength}\big(\RedDSAHash(B)\kern-0.16em\big) \!\pmod{\ParamG{r}}$
 \end{formulae}
 
-\introlist
 Define $\RedDSAGenPrivate \typecolon () \rightarrowR \RedDSAPrivate$ as:
 \begin{formulae}
   \item Return $\sk \leftarrowR \Field{\ParamG{r}}$.
 \end{formulae}
 
-\introlist
 Define $\RedDSADerivePublic \typecolon \RedDSAPrivate \rightarrow \RedDSAPublic$ by:
 \begin{formulae}
   \item $\RedDSADerivePublic(\sk) := \scalarmult{\sk}{\GenG{}}$.
 \end{formulae}
 
-\introlist
 Define $\RedDSAGenRandom \typecolon () \rightarrowR \RedDSARandom$ as:
 \begin{formulae}
   \item Choose a byte sequence $T$ uniformly at random on $\byteseq{(\RedDSAHashLength+128)/8}$.
@@ -1337,42 +1535,37 @@ Define $\RedDSAGenRandom \typecolon () \rightarrowR \RedDSARandom$ as:
 \end{formulae}
 
 Define $\RedDSARandomizerId := 0 \pmod{\ParamG{r}}$.
-\vspace{1ex}
 
-\introlist
 Define $\RedDSARandomizePrivate \typecolon \RedDSARandom \times \RedDSAPrivate \rightarrow \RedDSAPrivate$ by:
 \begin{formulae}
   \item $\RedDSARandomizePrivate(\RedDSARandomizer, \sk) := \sk + \RedDSARandomizer \pmod{\ParamG{r}}$.
 \end{formulae}
 
-\introlist
 Define $\RedDSARandomizePublic \typecolon \RedDSARandom \times \RedDSAPublic \rightarrow \RedDSAPublic$ as:
 \begin{formulae}
   \item $\RedDSARandomizePublic(\RedDSARandomizer, \vk) := \vk + \scalarmult{\RedDSARandomizer}{\GenG{}}$.
 \end{formulae}
 
-\introlist
 Define $\RedDSASign{} \typecolon (\sk \typecolon \RedDSAPrivate) \times (M \typecolon \RedDSAMessage) \rightarrowR \RedDSASignature$ as:
 \begin{algorithm}
   \item Choose a byte sequence $T$ uniformly at random on $\byteseq{(\RedDSAHashLength+128)/8}$.
-  \item Let $\vkBytes{} = \LEBStoOSPOf{\ellG{}}{\reprG{}\Of{\RedDSADerivePublic(\sk)}\kern 0.05em}$.
+  \item Let $\vkBytes{} = \LEBStoOSP{\ellG{}}(\reprG{}(\RedDSADerivePublic(\sk)))$.
   \item Let $r = \RedDSAHashToScalar(T \bconcat \vkBytes{} \bconcat M)$.
   \item Let $\RedDSASigR{} = \scalarmult{r}{\GenG{}}$.
-  \item Let $\RedDSAReprR{} = \LEBStoOSPOf{\ellG{}}{\reprG{}\Of{\RedDSASigR{}}\kern 0.05em}$.
+  \item Let $\RedDSAReprR{} = \LEBStoOSP{\ellG{}}(\reprG{}(\RedDSASigR{}))$.
   \item Let $\RedDSASigS{} = (r + \RedDSAHashToScalar(\RedDSAReprR{} \bconcat \vkBytes{} \bconcat M) \mult \sk) \bmod \ParamG{r}$.
-  \item Let $\RedDSAReprS{} = \LEBStoOSPOf{\bitlength(\ParamG{r})}{\ItoLEBSPOf{\bitlength(\ParamG{r})}{\RedDSASigS{}}\kern-0.12em}$.
+  \item Let $\RedDSAReprS{} = \LEBStoOSP{\bitlength(\ParamG{r})}(\ItoLEBSP{\bitlength(\ParamG{r})}(\RedDSASigS{}))$.
   \item Return $\RedDSAReprR{} \bconcat \RedDSAReprS{}$.
 \end{algorithm}
 
-\introlist
-Define $\RedDSAVerify{} \typecolon (\vk \typecolon \RedDSAPublic) \times (M \typecolon \RedDSAMessage) \times
+Define $\RedDSAValidate{} \typecolon (\vk \typecolon \RedDSAPublic) \times (M \typecolon \RedDSAMessage) \times
         (\sigma \typecolon \RedDSASignature) \rightarrow \bit$ as:
 \begin{algorithm}
   \item Let $\RedDSAReprR{}$ be the first $\ceiling{\ellG{}/8}$ bytes of $\sigma$, and
         let $\RedDSAReprS{}$ be the remaining $\ceiling{\bitlength(\ParamG{r})/8}$ bytes.
   \item Let $\RedDSASigR{} = \abstG{}\big(\LEOStoBSP{\ellG{}}(\RedDSAReprR{})\kern-0.15em\big)$, and
         let $\RedDSASigS{} = \LEOStoIP{8 \mult \length(\RedDSAReprS{})}(\RedDSAReprS{})$.
-  \item Let $\vkBytes{} = \LEBStoOSPOf{\ellG{}}{\reprG{}\Of{\vk}\kern 0.03em}$.
+  \item Let $\vkBytes{} = \LEBStoOSP{\ellG{}}(\reprG{}(\vk))$.
   \item Let $\RedDSASigc{} = \RedDSAHashToScalar(\RedDSAReprR{} \bconcat \vkBytes{} \bconcat M)$.
   \item Return $1$ if $\RedDSASigR{} \neq \bot$ and $\RedDSASigS{} < \ParamG{r}$ and
         $\scalarmult{\ParamG{h}}{\big(\!\!-\!\scalarmult{\RedDSASigS{}}{\GenG{}} + \RedDSASigR{} + \scalarmult{\RedDSASigc{}}{\vk}\big)} = \ZeroG{}$, otherwise $0$.
@@ -1382,7 +1575,7 @@ Define $\RedDSAVerify{} \typecolon (\vk \typecolon \RedDSAPublic) \times (M \typ
   \item The verification algorithm \emph{does not} check that $\RedDSASigR{}$ is a point of order
 at least $\ParamG{r}$. It \emph{does} check that $\RedDSAReprR{}$ is the canonical representation
 (as output by $\reprG{}$) of a point on the curve.
-  \item Appendix \crossref{reddsabatchverify} describes an optimization that \MAY be used to speed up
+  \item Appendix \crossref{reddsabatchvalidate} describes an optimization that can be used to speed up
         verification of batches of $\RedDSA$ signatures.
 \end{pnotes}
 
@@ -1390,7 +1583,7 @@ at least $\ParamG{r}$. It \emph{does} check that $\RedDSAReprR{}$ is the canonic
 may interact with other uses of additive properties of keys for Schnorr-based signature schemes,
 and so careful analysis of potential interactions is required if these properties are used.}
 
-The two abelian groups specified in \crossref{abstractsigmono} are instantiated for $\RedDSA$
+The two abelian groups specified in \crossref{sigmono} are instantiated for $\RedDSA$
 as follows:
 \begin{itemize}
   \item $\grpzero := 0 \pmod{\ParamG{r}}$
@@ -1408,22 +1601,22 @@ As required, $\RedDSADerivePublic$ is a group monomorphism, since it is injectiv
     &$= \RedDSADerivePublic(\sk_1)\, \combplus \RedDSADerivePublic(\sk_2)$.
 \end{tabular}
 
-A $\RedDSA$ public key $\vk$ can be encoded as a bit sequence $\reprG{}\Of{\vk}$\, of
+A $\RedDSA$ public key $\vk$ can be encoded as a bit sequence $\reprG{}(\vk)$\, of
 length $\ellG{}$ bits (or as a corresponding byte sequence $\vkBytes{}$ by then applying $\LEBStoOSP{\ellG{}}$).
 
 The scheme $\RedJubjub$ specializes $\RedDSA$ with:
 \begin{itemize}
   \item $\GroupG{} := \GroupJ$ as defined in \crossref{jubjub};
   \item $\RedDSAHashLength := 512$;
-  \item $\RedDSAHash(x) := \BlakeTwobOf{512}{\ascii{Zcash\_RedJubjubH}, x}$ as defined in \crossref{concreteblake2}.
+  \item $\RedDSAHash(x) := \BlakeTwob{512}(\ascii{Zcash\_RedJubjubH}, x)$ as defined in \crossref{concreteblake2}.
 \end{itemize}
 
 The generator $\GenG{} \typecolon \SubgroupG{}$ is left as an unspecified parameter.
 
 
-\subsection{Commitment schemes}{concretecommit}
+\subsection{Commitment schemes} \label{concretecommit}
 
-\lsubsubsubsection{Windowed Bowe--Hopwood Pedersen commitments}{concretewindowedcommit}
+\subsubsection{Windowed Bowe--Hopwood Pedersen commitments} \label{concretewindowedcommit}
 
 \crossref{concretepedersenhash} defines the Bowe--Hopwood Pedersen hash construction.
 We construct \emph{windowed Bowe--Hopwood Pedersen commitments} by reusing that construction,
@@ -1436,11 +1629,8 @@ Let $D \typecolon \byteseq{8}$ be a personalization parameter.
            \PedersenHashToPoint(D, s) + \scalarmult{r}{\FindGroupGHash(D, \ascii{r})}$
 \end{formulae}
 
-See \crossref{cctwindowedcommit} for rationale and efficient circuit implementation
-of this function.
 
-
-\subsubsection{Homomorphic Pedersen commitments}{concretehomomorphiccommit} \label{concretevaluecommit}
+\subsubsection{Homomorphic Pedersen commitments} \label{concretehomomorphiccommit}
 
 The windowed Pedersen commitments defined in the preceding section are
 highly efficient, but they do not support the homomorphic property needed
@@ -1451,19 +1641,16 @@ as follows:
 
 \begin{formulae}
   \item $\HomomorphicPedersenCommit{\ValueCommitRand}(D, s) :=
-           \scalarmult{s}{\FindGroupGHash(D, \ascii{v}}} + \scalarmult{\ValueCommitRand}{\FindGroupGHash(D, \ascii{r})}$
+           \scalarmult{s}{\FindGroupGHash(D, \ascii{v})} + \scalarmult{\ValueCommitRand}{\FindGroupGHash(D, \ascii{r})}$
   \item $\ValueCommitGenTrapdoor()$ generates the uniform distribution on $\Field{\ParamG{r}}$.
 \end{formulae}
-
-See \crossref{ccthomomorphiccommit} for rationale and efficient circuit implementation
-of this function.
 
 
 \subsection{Represented Groups and Pairings} \label{concretepairing}
 
 \subsubsection{BN-254 Represented Pairing} \label{bn254pairing}
 
-The represented pairing $\BNCurve$ is defined in this section.
+The represented pairing $\BNPairing$ is defined in this section.
 
 Let $\ParamG{q} := 21888242871839275222246405745257275088696311157297823662689037894645226208583$.
 
@@ -1475,7 +1662,7 @@ Let $\ParamG{b} := 3$.
 
 Let $\SubgroupG{1}$ be the group (of order $\ParamG{r}$) of rational points on a
 Barreto--Naehrig (\cite{BN2005}) curve $\CurveG{1}$ over $\Field{\ParamG{q}}$ with equation $y^2 = x^3 + \ParamG{b}$.
-This curve has embedding degree 12 with respect to $\ParamG{r}$.
+This curve has embedding degree $12$ with respect to $\ParamG{r}$.
 
 Let $\SubgroupG{2}$ be the subgroup of order $\ParamG{r}$ in the sextic twist $\CurveG{2}$ of
 $\CurveG{1}$ over $\Field{\ParamGexp{q}{2}}$ with equation $y^2 = x^3 + \frac{\ParamG{b}}{\xi}$,
@@ -1508,38 +1695,6 @@ Let $\GenG{2} \typecolon \SubgroupGstar{2} :=\;$
 
 $\GenG{1}$ and $\GenG{2}$ are generators of $\SubgroupG{1}$ and $\SubgroupG{2}$ respectively.
 
-\newsavebox{\gonebox}
-\begin{lrbox}{\gonebox}
-\setchanged
-\begin{bytefield}[bitwidth=0.045em]{264}
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$1$} &
-    \sbitbox{80}{$1$-bit $\tilde{y}$} &
-    \sbitbox{256}{$256$-bit $\ItoBEBSP{256}(x)$}
-\end{bytefield}
-\end{lrbox}
-
-\newsavebox{\gtwobox}
-\begin{lrbox}{\gtwobox}
-\setchanged
-\begin{bytefield}[bitwidth=0.045em]{520}
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$1$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{20}{$1$} &
-    \sbitbox{80}{$1$-bit $\tilde{y}$} &
-    \sbitbox{512}{$512$-bit $\ItoBEBSP{512}(x)$}
-\end{bytefield}
-\end{lrbox}
-
 Define $\ItoBEBSP{} \typecolon (\ell \typecolon \Nat) \times \binaryrange{\ell} \rightarrow
 \bitseq{\ell}$ as in \crossref{endian}.
 
@@ -1549,7 +1704,7 @@ For a point $P \typecolon \SubgroupGstar{1} = (\xP, \yP)$:
   \item The field elements $\xP$ and $\yP \typecolon \Field{q}$ are represented as
         integers $x$ and $y \typecolon \range{0}{q\!-\!1}$.
   \item Let $\tilde{y} = y \bmod 2$.
-  \item $P$ is encoded as $\Justthebox{\gonebox}$.
+  \item $P$ is encoded as $[\hexint{02} + \tilde{y}] \bconcat \ItoBEOSP{256}(x)$. TODO check
 \end{itemize}
 
 For a point $P \typecolon \SubgroupGstar{2} = (\xP, \yP)$:
@@ -1563,12 +1718,11 @@ For a point $P \typecolon \SubgroupGstar{2} = (\xP, \yP)$:
           1, &\caseif y > y' \\
           0, &\caseotherwise.
         \end{cases}$
-  \item $P$ is encoded as $\Justthebox{\gtwobox}$.
+  \item $P$ is encoded as $[\hexint{0A} + \tilde{y}] \bconcat \ItoBEOSP{512}(x)$. TODO check
 \end{itemize}
 
 \begin{nnotes}
-  \item TODO: check.
-        Only the $\ParamG{r}$-order subgroups $\SubgroupG{2, T}$ are used,
+  \item Only the $\ParamG{r}$-order subgroups $\SubgroupG{2, T}$ are used,
         not their containing groups $\GroupG{2, T}$. Points in
         $\SubgroupGstar{2}$ are \emph{always} checked to be of order $\ParamG{r}$ when
         decoding from external representation. (The group of rational points $\GroupG{1}$
@@ -1576,8 +1730,7 @@ For a point $P \typecolon \SubgroupGstar{2} = (\xP, \yP)$:
         needed in that case, and elements of $\SubgroupG{T}$ are never represented externally.)
         The $\subgroupr$ superscripts on $\SubgroupG{1, 2, T}$ are used for consistency with
         notation elsewhere in this specification.
-  \item The points at infinity $\ZeroG{1, 2}$ never occur in proofs and
-        have no defined encodings.
+  \item The points at infinity $\ZeroG{1, 2}$ never occur in proofs and have no defined encodings.
   \item A rational point $P \neq \ZeroG{2}$ on the curve $\CurveG{2}$ can be
         verified to be of order $\ParamG{r}$, and therefore in $\SubgroupGstar{2}$,
         by checking that $\ParamG{r} \mult P = \ZeroG{2}$.
@@ -1598,41 +1751,16 @@ For a point $P \typecolon \SubgroupGstar{2} = (\xP, \yP)$:
 \end{nnotes}
 
 When computing square roots in $\Field{\ParamG{q}}$ or $\Field{\ParamGexp{q}{2}}$ in
-order to decompress a point encoding, the implementation \MUSTNOT assume that
+order to decompress a point encoding, the implementation must not assume that
 the square root exists, or that the encoding represents a point on the curve.
-
-
-\newsavebox{\sonebox}
-\begin{lrbox}{\sonebox}
-\setsapling
-\begin{bytefield}[bitwidth=0.045em]{384}
-    \sbitbox{20}{$1$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{80}{$1$-bit $\tilde{y}$} &
-    \sbitbox{381}{$381$-bit $\ItoBEBSP{381}(x)$}
-\end{bytefield}
-\end{lrbox}
-
-\newsavebox{\stwobox}
-\begin{lrbox}{\stwobox}
-\setsapling
-\begin{bytefield}[bitwidth=0.045em]{768}
-    \sbitbox{20}{$1$} &
-    \sbitbox{20}{$0$} &
-    \sbitbox{80}{$1$-bit $\tilde{y}$} &
-    \sbitbox{381}{$381$-bit $\ItoBEBSP{381}(x_1)$} &
-    \sbitbox{384}{$384$-bit $\ItoBEBSP{384}(x_2)$}
-\end{bytefield}
-\end{lrbox}
 
 
 \subsubsection{BLS12-381 Represented Pairing} \label{bls12381pairing}
 
-The represented pairing $\BLSCurve$ is defined in this section. Parameters are taken from
+The represented pairing $\BLSPairing$ is defined in this section. Parameters are taken from
 \cite{Bowe2017}.
 
-\introlist
-Let $\ParamS{q} :=\;$\scalebox{0.805}[1]{$4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787$.}
+Let $\ParamS{q} :=\;$\scalebox{0.8}[1]{$4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787$.}
 
 Let $\ParamS{r} := 52435875175126190479447740508185965837690552500527637822603658699938581184513$.
 
@@ -1644,7 +1772,7 @@ Let $\ParamS{b} := 4$.
 
 Let $\SubgroupS{1}$ be the subgroup of order $\ParamS{r}$ of the group of rational points
 on a Barreto--Lynn--Scott (\cite{BLS2002}) curve $\CurveS{1}$ over $\Field{\ParamS{q}}$ with
-equation $y^2 = x^3 + \ParamS{b}$. This curve has embedding degree 12 with respect to $\ParamS{r}$.
+equation $y^2 = x^3 + \ParamS{b}$. This curve has embedding degree $12$ with respect to $\ParamS{r}$.
 
 Let $\SubgroupS{2}$ be the subgroup of order $\ParamS{r}$ in the sextic twist $\CurveS{2}$ of
 $\CurveS{1}$ over $\Field{\ParamSexp{q}{2}}$ with equation $y^2 = x^3 + 4(i + 1)$, where
@@ -1684,7 +1812,6 @@ $\GenS{1}$ and $\GenS{2}$ are generators of $\SubgroupS{1}$ and $\SubgroupS{2}$ 
 Define $\ItoBEBSP{} \typecolon (\ell \typecolon \Nat) \times \binaryrange{\ell} \rightarrow
 \bitseq{\ell}$ as in \crossref{endian}.
 
-\introlist
 For a point $P \typecolon \SubgroupSstar{1} = (\xP, \yP)$:
 
 \begin{itemize}
@@ -1694,7 +1821,7 @@ For a point $P \typecolon \SubgroupSstar{1} = (\xP, \yP)$:
           1, &\caseif y > \ParamS{q}-y \\
           0, &\caseotherwise.
         \end{cases}$
-  \item $P$ is encoded as $\Justthebox{\sonebox}$.
+  \item $P$ is encoded as $\ItoBEOSP{384}((4 + \tilde{y}) \mult 2^{381} + x)$.
 \end{itemize}
 
 For a point $P \typecolon \SubgroupSstar{2} = (\xP, \yP)$:
@@ -1708,21 +1835,19 @@ For a point $P \typecolon \SubgroupSstar{2} = (\xP, \yP)$:
           1, &\caseif y > y' \text{ lexicographically} \\
           0, &\caseotherwise.
         \end{cases}$
-  \item $P$ is encoded as $\Justthebox{\stwobox}$.
+  \item $P$ is encoded as $\ItoBEOSP{384}((4 + \tilde{y}) \mult 2^{381} + x_1) \bconcat \ItoBEOSP{384}{x_2}$.
 \end{itemize}
 
 \begin{nnotes}
-  \item TODO: check.
-        Only the $\ParamS{r}$-order subgroups $\SubgroupS{1, 2, T}$ are used,
+  \item Only the $\ParamS{r}$-order subgroups $\SubgroupS{1, 2, T}$ are used,
         not their containing groups $\GroupS{1, 2, T}$. Points in
         $\SubgroupSstar{1, 2}$ are \emph{always} checked to be of order $\ParamS{r}$ when
         decoding from external representation. (Elements of $\SubgroupS{T}$ are
         never represented externally.)
         The $\subgroupr$ superscripts on $\SubgroupS{1, 2, T}$ are used for consistency with
         notation elsewhere in this specification.
-  \item The points at infinity $\ZeroS{1, 2}$ never occur in proofs and
-        have no defined encodings in this protocol.
-  \item In contrast to the corresponding $\BNCurve$ curve, $\CurveS{1}$ over $\Field{\ParamS{q}}$
+  \item The points at infinity $\ZeroS{1, 2}$ never occur in proofs and have no defined encodings.
+  \item In contrast to the corresponding $\BNPairing$ curve, $\CurveS{1}$ over $\Field{\ParamS{q}}$
         is \emph{not} of prime order.
   \item A rational point $P \neq \ZeroS{i}$ on the curve $\CurveS{i}$ for $i \in \setof{1, 2}$
         can be verified to be of order $\ParamS{r}$, and therefore in $\SubgroupSstar{i}$,
@@ -1730,16 +1855,15 @@ For a point $P \typecolon \SubgroupSstar{2} = (\xP, \yP)$:
   \item The encodings for $\SubgroupSstar{1, 2}$ are as used in Zcash.
   \item Algorithms for decompressing points from the encodings of
         $\SubgroupSstar{1, 2}$ are defined analogously to those for
-        $\SubgroupGstar{1, 2}$ in \crossref{bnpairing}, taking into account that
+        $\SubgroupGstar{1, 2}$ in \crossref{bn254pairing}, taking into account that
         the SORT compressed form (not the LSB compressed form) is used
         for $\SubgroupSstar{1}$.
 \end{nnotes}
 
 When computing square roots in $\Field{\ParamS{q}}$ or $\Field{\ParamSexp{q}{2}}$
-in order to decompress a point encoding, the implementation \MUSTNOT assume
+in order to decompress a point encoding, the implementation must not assume
 that the square root exists, or that the encoding represents a point on the
 curve.
-}
 
 
 \subsubsection{Jubjub} \label{jubjub}
@@ -1762,7 +1886,7 @@ to be efficiently implementable in zk-SNARK circuits. The represented group $\Gr
 on this curve is defined in this section.
 
 
-Let $\ParamJ{q} := \ParamS{r}$, as defined in \crossref{blspairing}.
+Let $\ParamJ{q} := \ParamS{r}$, as defined in \crossref{bls12381pairing}.
 
 Let $\ParamJ{r} := 6554484396890773809930967563523245729705921265872317281365359162392183254199$.
 
@@ -1774,10 +1898,10 @@ Let $\ParamJ{a} := -1$.
 
 Let $\ParamJ{d} := -10240/10241 \pmod{\ParamJ{q}}$.
 
-Let $\GroupJ$ be the group of points $(u, \varv)$ on a \ctEdwardsCurve $\CurveJ$ over $\Field{\ParamJ{q}}$
-with equation $\ParamJ{a} \smult u^2 + \varv^2 = 1 + \ParamJ{d} \smult u^2 \smult \varv^2$.
+Let $\GroupJ$ be the group of points $(u, \varv)$ on a ctEdwards curve $\CurveJ$ over $\Field{\ParamJ{q}}$
+with equation $\ParamJ{a} \mult u^2 + \varv^2 = 1 + \ParamJ{d} \mult u^2 \mult \varv^2$.
 The zero point with coordinates $(0, 1)$ is denoted $\ZeroJ$.
-$\GroupJ$ has order $\ParamJ{h} \smult \ParamJ{r}$.
+$\GroupJ$ has order $\ParamJ{h} \mult \ParamJ{r}$.
 
 Let $\ellJ := 256$.
 
@@ -1785,12 +1909,12 @@ Define $\ItoLEBSP{} \typecolon (\ell \typecolon \Nat) \times \binaryrange{\ell} 
 as in \crossref{endian}.
 
 Define $\reprJ \typecolon \GroupJ \rightarrow \ReprJ$ such
-that $\reprJ\Of{u, \varv} = \ItoLEBSPOf{256}{\varv + 2^{255} \smult \tilde{u}}$, where
+that $\reprJ(u, \varv) = \ItoLEBSP{256}(\varv + 2^{255} \mult \tilde{u})$, where
 $\tilde{u} = u \bmod 2$.
 
 Let $\abstJ \typecolon \ReprJ \rightarrow \maybe{\GroupJ}$
 be the left inverse of $\reprJ$ such that if $S$ is not in the range of
-$\reprJ$, then $\abstJ\Of{S} = \bot$.
+$\reprJ$, then $\abstJ(S) = \bot$.
 
 Define $\SubgroupJ$ as the order-$\ParamJ{r}$ subgroup of $\GroupJ$. Note that this includes $\ZeroJ$.
 For the set of points of order $\ParamJ{r}$ (which excludes $\ZeroJ$), we write $\SubgroupJstar$.
@@ -1798,7 +1922,7 @@ For the set of points of order $\ParamJ{r}$ (which excludes $\ZeroJ$), we write 
 Define $\SubgroupReprJ := \setof{\reprJ(P) \typecolon \ReprJ \suchthat P \in \SubgroupJ}$.
 
 \begin{nnotes}
-  \item The \ctEdwardsCompressedEncoding used here is
+  \item The ctEdwards compressed encoding used here is
         consistent with that used in EdDSA \cite{BJLSY2015} for public keys and
         the $R$ element of a signature.
   \item \cite[``Encoding and parsing curve points'']{BJLSY2015} gives algorithms
@@ -1806,7 +1930,7 @@ Define $\SubgroupReprJ := \setof{\reprJ(P) \typecolon \ReprJ \suchthat P \in \Su
 \end{nnotes}
 
 When computing square roots in $\Field{\ParamJ{q}}$ in order to decompress a point encoding,
-the implementation \MUSTNOT assume that the square root exists, or that the encoding
+the implementation must not assume that the square root exists, or that the encoding
 represents a point on the curve.
 
 This specification requires ``strict'' parsing as defined in
@@ -1814,12 +1938,11 @@ This specification requires ``strict'' parsing as defined in
 
 Note that algorithms elsewhere in this specification that use $\JubjubCurve$ may impose
 other conditions on points, for example that they have order at least $\ParamJ{r}$.
-}
 
 
 \subsubsection{Hash Extractor for ctEdwards curves} \label{concreteedwardsextractor}
 
-Let $\GroupG$ be a ctEdwards curve over $\Field{q}$.
+Let $\GroupG{}$ be a ctEdwards curve over $\Field{q}$.
 
 TODO: this was defined for Jubjub but should be applicable to any ctEdwards curve;
 double-check this.
@@ -1827,60 +1950,59 @@ double-check this.
 TODO: this returns a bit sequence, but we might not want to convert to bits,
 especially in circuit contexts where that is expensive.
 
-Let $\Selectu\Of{(u, \varv)} = u$ and let $\Selectv\Of{(u, \varv)} = \varv$.
+Let $\Selectu((u, \varv)) = u$ and let $\Selectv((u, \varv)) = \varv$.
 
-Define $\ExtractG \typecolon \SubgroupG \rightarrow \Field{q}$ by
+Define $\ExtractG \typecolon \SubgroupG{} \rightarrow \Field{q}$ by
 \begin{formulae}
-  \item $\ExtractG(P) := \ItoLEBSPOf{TODO}{\Selectu\Of{P}}$.
+  \item $\ExtractG(P) := \ItoLEBSP{TODO}(\Selectu(P))$.
 \end{formulae}
 
-\facts{The point $(0, 1) = \ZeroG$, and the point $(0, -1)$ has order $2$ in $\GroupG$.
-$\SubgroupG$ is of odd-prime order.}
+\facts{The point $(0, 1) = \ZeroG{}$, and the point $(0, -1)$ has order $2$ in $\GroupG{}$.
+$\SubgroupG{}$ is of odd-prime order.}
 
 % <https://github.com/zcash/zcash/issues/2234#issuecomment-333360977>
 \begin{lemma}
-Let $P = (u, \varv) \in \SubgroupG$. Then $(u, -\varv) \notin \SubgroupG$.
+Let $P = (u, \varv) \in \SubgroupG{}$. Then $(u, -\varv) \notin \SubgroupG{}$.
 \end{lemma}
 
 \begin{proof}
-If $P = \ZeroG$ then $(u, -\varv) = (0, -1) \notin \SubgroupG$.
+If $P = \ZeroG{}$ then $(u, -\varv) = (0, -1) \notin \SubgroupG{}$.
 Else, $P$ is of odd-prime order. Note that $\varv \neq 0$.
 (If $\varv = 0$ then $a \mult u^2 = 1$, and so applying the doubling formula
-gives $\scalarmult{2}{P} = (0, -1)$, then $\scalarmult{4}{P} = (0, 1) = \ZeroG$;
+gives $\scalarmult{2}{P} = (0, -1)$, then $\scalarmult{4}{P} = (0, 1) = \ZeroG{}$;
 contradiction since then $P$ would not be of odd-prime order.)
 Therefore, $-\varv \neq \varv$.
-Now suppose $(u, -\varv) = Q$ is a point in $\SubgroupG$. Then by applying the
+Now suppose $(u, -\varv) = Q$ is a point in $\SubgroupG{}$. Then by applying the
 doubling formula we have $\scalarmult{2}{Q} = -\scalarmult{2}{P}$.
 But also $\scalarmult{2}{(-P)} = -\scalarmult{2}{P}$. Therefore either
-$Q = -P$ (then $\Selectv\Of{Q} = \Selectv\Of{-P}$\,; contradiction since
-$-\varv \neq \varv$), or doubling is not injective on $\SubgroupG$ (contradiction
-since $\SubgroupG$ is of odd order \cite{KvE2013}).
+$Q = -P$ (then $\Selectv(Q) = \Selectv(-P)$\,; contradiction since
+$-\varv \neq \varv$), or doubling is not injective on $\SubgroupG{}$ (contradiction
+since $\SubgroupG{}$ is of odd order \cite{KvE2013}).
 \end{proof}
 
 \begin{theorem}
-$\Selectu$ is injective on $\SubgroupG$.
+$\Selectu$ is injective on $\SubgroupG{}$.
 \end{theorem}
 
 \begin{proof}
 By writing the curve equation as
-$\varv^2 = (1 - a \smult u^2) / (1 - d \smult u^2)$, and noting that the
-potentially exceptional case $1 - d \smult u^2 = 0$ does not occur for a
-\ctEdwardsCurve, we see that for a given $u$ there can be at
+$\varv^2 = (1 - a \mult u^2) / (1 - d \mult u^2)$, and noting that the
+potentially exceptional case $1 - d \mult u^2 = 0$ does not occur for a
+ctEdwards curve, we see that for a given $u$ there can be at
 most two possible solutions for $\varv$, and that if there are two solutions
 they can be written as $\varv$ and $-\varv$. In that case by the Lemma, at
-most one of $(u, \varv)$ and $(u, -\varv)$ is in $\SubgroupG$. Therefore,
-$\Selectu$ is injective on points in $\SubgroupG$.
+most one of $(u, \varv)$ and $(u, -\varv)$ is in $\SubgroupG{}$. Therefore,
+$\Selectu$ is injective on points in $\SubgroupG{}$.
 \end{proof}
 
 Since $\ItoLEBSP{TODO}$ is injective, it follows that $\ExtractG$ is injective
-on $\SubgroupG$.
-}
+on $\SubgroupG{}$.
 
 
 \subsubsection{Group Hash into a ctEdwards curve} \label{concreteedwardsgrouphash}
 
-Let $\GroupG$ be a ctEdwards curve over $\Field{q}$, and
-let $\SubgroupG$, $\SubgroupGstar$, and $\abstG$ be as defined in \crossref{ctedwardsgroup}.
+Let $\GroupG{}$ be a ctEdwards curve over $\Field{q}$, and
+let $\SubgroupG{}$, $\SubgroupGstar{}$, and $\abstG{}$ be as defined in \crossref{representedgroup}.
 
 TODO: this was defined for Jubjub but should be applicable to any ctEdwards curve;
 double-check this.
@@ -1892,7 +2014,7 @@ Let $\GroupGHashInput := \byteseq{8} \times \byteseqs$, and
 let $\GroupGHashURSType := \byteseq{64}$.
 
 (The input element with type $\byteseq{8}$ is intended to act as a
-``personalization'' parameter to distinguish uses of the \groupHash for
+``personalization'' parameter to distinguish uses of the group hash for
 different purposes.)
 
 TODO: define $\URS$ without relying on the Sapling randomness beacon.
@@ -1905,36 +2027,35 @@ Let $\LEOStoIP{}$ be as defined in \crossref{endian}.
 Let $D \typecolon \byteseq{8}$ be an $8$-byte domain separator, and
 let $M \typecolon \byteseqs$ be the hash input.
 
-\introlist
-The hash $\GroupGHash{\URS}(D, M) \typecolon \SubgroupGstar$ is calculated as follows:
+The hash $\GroupGHash{\URS}(D, M) \typecolon \SubgroupGstar{}$ is calculated as follows:
 
 \begin{algorithm}
   \item let $\HashOutput = \BlakeTwos{256}(D,\, \URS \bconcat\, M)$
-  \item let $P = \abstG\Of{\LEOStoBSP{256}(\HashOutput)\kern-0.12em}$
+  \item let $P = \abstG(\LEOStoBSP{256}(\HashOutput))$
   \item if $P = \bot$ then return $\bot$
   \item let $Q = \scalarmult{\ParamG{h}}{P}$
-  \item if $Q = \ZeroG$ then return $\bot$, else return $Q$.
+  \item if $Q = \ZeroG{}$ then return $\bot$, else return $Q$.
 \end{algorithm}
 
 \begin{pnotes}
   \item The $\BlakeTwos{256}$ chaining variable after processing $\URS$ may be precomputed.
-  \item The use of $\GroupGHash{\URS}$ for $\DiversifyHash$ and to generate independent bases
-        needs a random oracle (for inputs on which $\GroupGHash{\URS}$ does not return $\bot$);
+  \item The use of $\GroupGHash{\URS}$ to generate independent bases
+        needs a random oracle (with domain given by inputs on which $\GroupGHash{\URS}$ does not return $\bot$);
         here we show that it is sufficient to employ a simpler random oracle instantiated by
         $\vphantom{a^b}\BlakeTwos{256}$ in the security analysis.
 
         $\exclusivefun{\HashOutput \typecolon \byteseq{32}}
-          {\abstG\Of{\LEOStoBSP{256}(\HashOutput)\kern-0.12em} \typecolon \GroupG}{\bot}$
+          {\abstG(\LEOStoBSP{256}(\HashOutput)) \typecolon \GroupG{}}{\bot}$
         is injective, and both it and its inverse are efficiently computable.
 
-        $\exclusivefun{P \typecolon \GroupG}
-          {\scalarmult{\ParamG{h}}{P} \typecolon \SubgroupGstar}{\ZeroG}$
+        $\exclusivefun{P \typecolon \GroupG{}}
+          {\scalarmult{\ParamG{h}}{P} \typecolon \SubgroupGstar{}}{\ZeroG{}}$
         is exactly $\ParamG{h}$-to-$1$, and both it and its inverse relation are efficiently computable.
 
         It follows that when $\fun{\big(D \typecolon \byteseq{8}, M \typecolon \byteseqs\big)}
-          {\BlakeTwosOf{256}{D,\, \URS \bconcat\, M}\! \typecolon \byteseq{32}}$
+          {\BlakeTwos{256}(D, \URS \bconcat M) \typecolon \byteseq{32}}$
         is modelled as a random oracle, $\exclusivefun{\big(D \typecolon \byteseq{8}, M \typecolon \byteseqs\big)}
-          {\GroupGHash{\URS}\big(D, M\big) \typecolon \SubgroupGstar}{\bot}$ also acts as a random oracle.
+          {\GroupGHash{\URS}\big(D, M\big) \typecolon \SubgroupGstar{}}{\bot}$ also acts as a random oracle.
 \end{pnotes}
 
 Define $\first \typecolon (\byte \rightarrow \maybe{T}) \rightarrow \maybe{T}$
@@ -1942,17 +2063,17 @@ so that $\first(f) = f(i)$ where $i$ is the least integer in $\byte$
 such that $f(i) \neq \bot$, or $\bot$ if no such $i$ exists.
 
 Define $\FindGroupGHash\big(D, M\big) :=
-\first(\fun{i \typecolon \byte}{\GroupGHash{\URS}\Of{D, M \bconcat\, [i]} \typecolon \maybe{\SubgroupGstar}})$.
+\first(\fun{i \typecolon \byte}{\GroupGHash{\URS}(D, M \bconcat [i]) \typecolon \maybe{\SubgroupGstar{}}})$.
 
 \pnote{For random input, $\FindGroupGHash$ returns $\bot$ with probability approximately $2^{-256}$.}
 
 
-\section{Acknowledgements}
+\section{Acknowledgements} \label{acknowledgements}
 
 Portions of this document were extracted from the Zcash Protocol Specification by Daira Hopwood.
 
 
-\section{References}
+\section{References} \label{references}
 
 \begingroup
 \hfuzz=2pt
@@ -1964,18 +2085,18 @@ Portions of this document were extracted from the Zcash Protocol Specification b
 
 \pagebreak
 \appendix
-\lpart{Appendices}{appendices}
+\part{Appendices} \label{appendices}
 
-\lsection{Circuit Design}{circuitdesign}
+\section{Circuit Design} \label{circuitdesign}
 
-\subsection{Constraint Programs}
+\subsection{Constraint Programs} \label{constraintprograms}
 
 A circuit is defined in terms of a constraint program specifying a
 \emph{Rank-1 Constraint System} (R1CS), as detailed in this section.
 
-Let $\Field$ be a finite field.
+Let $\Field{}$ be a finite field.
 
-A constraint program consists of a set of constraints over variables in $\Field$,
+A constraint program consists of a set of constraints over variables in $\Field{}$,
 each of the form:
 
 \begin{formulae}
@@ -1983,20 +2104,19 @@ each of the form:
 \end{formulae}
 
 where $\lincomb{A}$, $\lincomb{B}$, and $\lincomb{C}$ are linear combinations
-of variables and constants in $\Field$.
+of variables and constants in $\Field{}$.
 
-Here $\vartimes$ and $\mult$ both represent multiplication in the field $\Field$,
+Here $\vartimes$ and $\mult$ both represent multiplication in the field $\Field{}$,
 but we use $\vartimes$ for multiplications corresponding to gates of the circuit,
 and $\mult$ for multiplications by constants in the terms of a linear combination.
 $\vartimes$ should not be confused with $\times$ which is defined as cartesian product
 in \crossref{notation}.
 
 
-\subsection{Circuit Components}
+\section{Circuit Components} \label{cctcomponents}
 
 Each of the following sections describes how to implement a particular
-component of the circuit, and counts the number of constraints required.
-Some components make use of others; the order of presentation is ``bottom-up''.
+circuit component, and counts the number of constraints required.
 
 It is important for security to ensure that variables intended to be of
 boolean type are boolean-constrained; and for efficiency that they are
@@ -2007,15 +2127,14 @@ or are assumed to have been boolean-constrained separately.
 Affine coordinates for elliptic curve points are assumed to represent points
 on the relevant curve, unless otherwise specified.
 
-In this section, variables have type $\Field$ unless otherwise specified.
+In this section, variables have type $\Field{}$ unless otherwise specified.
 In contrast to most of this document, we use zero-based indexing in order
 to more closely match the implementation.
 
 
-\introsection
-\lsubsubsection{Operations on individual bits}{cctbitops}
+\subsection{Operations on individual bits} \label{cctbitops}
 
-\lsubsubsubsection{Boolean constraints}{cctboolean}
+\subsubsection{Boolean constraints} \label{cctboolean}
 
 A boolean constraint $b \in \bit$ can be implemented as:
 
@@ -2024,8 +2143,7 @@ A boolean constraint $b \in \bit$ can be implemented as:
 \end{formulae}
 
 
-\introlist
-\lsubsubsubsection{Conditional equality}{cctcondeq}
+\subsubsection{Conditional equality} \label{cctcondeq}
 
 The constraint ``either $a = 0$ or $b = c$'' can be implemented as:
 
@@ -2034,8 +2152,7 @@ The constraint ``either $a = 0$ or $b = c$'' can be implemented as:
 \end{formulae}
 
 
-\introlist
-\lsubsubsubsection{Selection constraints}{cctselection}
+\subsubsection{Selection constraints} \label{cctselection}
 
 A selection constraint $(b \bchoose x : y) = z$, where $b \typecolon \bit$ has been
 boolean-constrained, can be implemented as:
@@ -2045,10 +2162,9 @@ boolean-constrained, can be implemented as:
 \end{formulae}
 
 
-\introsection
-\lsubsubsubsection{Nonzero constraints}{cctnonzero}
+\subsubsection{Nonzero constraints} \label{cctnonzero}
 
-Since only nonzero elements of $\Field$ have a multiplicative inverse, the
+Since only nonzero elements of $\Field{}$ have a multiplicative inverse, the
 assertion $a \neq 0$ can be implemented by witnessing the inverse,
 $\Inv{a} = a^{-1} \pmod$:
 
@@ -2064,43 +2180,39 @@ $n$ variables (or linear combinations) that are supposed to be nonzero:
 $a_\barerange{0}{n-1}$. Multiply these together (using $n\!-\!1$ constraints)
 to give $a^* = \sproduct{i=0}{n-1} a_i$; then, constrain $a^*$ to be nonzero.
 This works because the product $a^*$ is nonzero if and only if all of
-$a_\barerange{0}{n-1}$ are nonzero. However, the \Sapling circuit does not use
-this optimization.}
+$a_\barerange{0}{n-1}$ are nonzero.}
 
 
-\introsection
-\lsubsubsubsection{Exclusive-or constraints}{cctxor}
+\subsubsection{Exclusive-or constraints} \label{cctxor}
 
 An exclusive-or operation $a \xor b = c$, where $a, b \typecolon \bit$ are
 already boolean-constrained, can be implemented in one constraint as:
 
 \begin{formulae}
-  \item $\constraint{2 \smult a}{b}{a + b - c}$
+  \item $\constraint{2 \mult a}{b}{a + b - c}$
 \end{formulae}
 
 This automatically boolean-constrains $c$. Its correctness can be seen
 by checking the truth table of $(a, b)$.
 
 
-\introsection
-\lsubsubsection{Operations on multiple bits}{cctmultibitops}
+\subsection{Operations on multiple bits} \label{cctmultibitops}
 
-\lsubsubsubsection{[Un]packing modulo \rS}{cctmodpack}
+\subsubsection{[Un]packing} \label{cctmodpack}
 
 Let $n \typecolon \PosInt$ be a constant.
-The operation of converting a field element, $a \typecolon \Field$,
+The operation of converting a field element, $a \typecolon \Field{q}$,
 to a sequence of boolean variables $b_\barerange{0}{n-1} \typecolon \bitseq{n}$
-such that $a = \ssum{i=0}{n-1} b_i \mult 2^i \pmod$, is called
-\definingquotedterm{unpacking}. The inverse operation is called \definingquotedterm{packing}.
+such that $a = \ssum{i=0}{n-1} b_i \mult 2^i \pmod{q}$, is called
+``unpacking''. The inverse operation is called ``packing''.
 
-In the \quadraticConstraintProgram these are the same operation (but
+In the constraint program these are the same operation (but
 see the note about canonical representation below). We assume that
 the variables $b_\barerange{0}{n-1}$ are boolean-constrained separately.
 
-We have $a \bmod \ParamS{r} = \left(\vsum{i=0}{n-1} b_i \mult 2^i\right) \bmod \ParamS{r}
-                            = \left(\vsum{i=0}{n-1} b_i \mult (2^i \bmod \ParamS{r})\!\right) \bmod \ParamS{r}$.
+We have $a \bmod q = \left(\vsum{i=0}{n-1} b_i \mult 2^i\right) \bmod q
+                   = \left(\vsum{i=0}{n-1} b_i \mult (2^i \bmod q)\!\right) \bmod q$.
 
-\introlist
 This can be implemented in one constraint:
 
 \begin{formulae}
@@ -2112,24 +2224,18 @@ This can be implemented in one constraint:
   \item Since the constraint has only a trivial multiplication, it is
         possible to eliminate it by merging it into the boolean constraint
         of one of the output bits, expressing that bit as a linear
-        combination of the others and $a$. However, this optimization
-        requires substitutions that would interfere with the modularity
-        of the circuit implementation (for a saving of only one constraint
-        per unpacking operation), and so we do not use it for the
-        \Sapling circuit.
-  \item In the case $n = 255$, for $a < 2^{255} - \ParamS{r}$ there are two
-        possible representations of $a \typecolon \Field$ as a
-        sequence of $255$ bits, corresponding to $\ItoLEBSPOf{255}{a}$ and
-        $\ItoLEBSPOf{255}{a + \ParamS{r}}$. This is a potential hazard, but
-        it may or may not be necessary to force use of the canonical
-        representation $\ItoLEBSPOf{255}{a}$, depending on the context
-        in which the [un]packing operation is used. We therefore do not
-        consider this to be part of the [un]packing operation itself.
+        combination of the others and $a$.
+  \item If $2^n > q$, there may be multiple representations of
+        $a \typecolon \Field{q}$ as a sequence of $n$ bits. This is a
+        potential hazard, but it may or may not be necessary to force
+        use of the canonical representation $\ItoLEBSP{n}(a)$, depending
+        on the context in which the [un]packing operation is used.
+        We therefore do not consider this to be part of the [un]packing
+        operation itself.
 \end{pnotes}
 
 
-\introlist
-\lsubsubsubsection{Range check}{cctrange}
+\subsubsection{Range check} \label{cctrange}
 
 Let $n \typecolon \PosInt$ be a constant, and let
 $a = \ssum{i=0}{n-1} a_i \mult 2^i \typecolon \Nat$.
@@ -2150,7 +2256,6 @@ such that $m < n-1$ and $c_m = 1$. Furthermore if $c_{\barerange{n-2}{0}}$ has
 $t > 0$ trailing $1$ bits, then we do not need to allocate variables for
 $\Pi_{\barerange{0}{t-1}}$ because those variables will not be used below.
 
-\introlist
 More explicitly:
 
 Let $\Pi_{n-1} = a_{n-1}$.
@@ -2161,7 +2266,6 @@ For $i \from n-2 \downto t$,
   \item if $c_i = 1$, then constrain $\constraint{\Pi_{i+1}}{a_i}{\Pi_i}$.
 \end{itemize}
 
-\introlist
 Then we constrain the $a_i$ as follows:
 
 For $i \from n-1 \downto 0$,
@@ -2176,8 +2280,6 @@ boolean constraints on bits of $a_i$.
 This costs $n + k$ constraints, where $k$ is the number of non-trailing $1$ bits in
 $c_{\barerange{n-2}{0}}$.
 
-\introsection
-\theoremlabel{thmrangeconstraints}
 \begin{theorem}[Correctness of a constraint system for range checks]
 
 Assume $c_{\barerange{0}{n-1}} \typecolon \bitseq{n}$ and $c_{n-1} = 1$.
@@ -2203,7 +2305,6 @@ Base case $m = n-1$: since $c_{n-1} = 1$, the constraint system has
 just one boolean constraint on $a_{n-1}$, which fulfils the theorem since
 $A_{n-1} \leq C_{n-1}$ is always satisfied.
 
-\introlist
 Inductive case $m < n-1$:
 \begin{itemize}
   \item If $A_{m+1} > C_{m+1}$, then by the inductive hypothesis the constraint system
@@ -2235,14 +2336,12 @@ Correctness of the full constraint system follows by taking $m = 0$ in the above
 
 \vspace{1ex}
 The algorithm in \crossref{ccteddecompressvalidate} uses range checks with
-$c = \ParamS{r}-1$ to validate \ctEdwardsCompressedEncodings. In that case $n = 255$ and
-$k = 132$, so the cost of each such range check is $387$ constraints.
+$c = \ParamS{r}-1$ to validate ctEdwards compressed encodings.
 
-\introsection
 \nnote{It is possible to optimize the computation of $\Pi_{\barerange{t}{n-2}}$ further.
 Notice that $\Pi_m$ is only used when $m$ is the index of the last bit of a run of $1$ bits
 in $c$. So for each such run of $1$ bits $c_{\barerange{m}{m+N-2}}$ of length $N-1$, it is
-sufficient to compute an \Nary{} AND of $a_{\barerange{m}{m+N-2}}$ and $\Pi_{m+N-1}$:
+sufficient to compute an \mbox{$N$-ary} AND of $a_{\barerange{m}{m+N-2}}$ and $\Pi_{m+N-1}$:
 $R = \sproduct{i=0}{N-1}{X_i}$. This can be computed in $3$ constraints for any
 $N$; boolean-constrain the output $R$, and then add constraints
 
@@ -2257,56 +2356,41 @@ $N$; boolean-constrain the output $R$, and then add constraints
 \end{tabular}
 
 \vspace{1ex}
-where $\mathsf{inv}$ is witnessed as $\smash{\Of{\NminusSumOfX}^{-1}}$ if $R = 0$
+where $\mathsf{inv}$ is witnessed as $(\NminusSumOfX)^{-1}$ if $R = 0$
 or is unconstrained otherwise. (Since $N < \ParamS{r}$, the sums cannot overflow.)
 
 In fact the last constraint is not needed in this context because it is sufficient to
 compute an upper bound on each $\Pi_m$ (i.e.\ it does not benefit a malicious prover to
 witness $R = 1$ when the result of the AND should be $0$).
 So the cost of computing $\Pi$ variables for an arbitrarily long run of $1$ bits can be
-reduced to $2$ constraints. For example, for $c = \ParamS{r}-1$ the overall cost would
-be reduced to $255 + 68 = 323$ constraints.
-
-These optimizations are not used in \Sapling.}
+reduced to $2$ constraints.}
 
 
-\introsection
-\lsubsubsection{Elliptic curve operations}{cctelliptic}
+\subsection{Elliptic curve operations} \label{cctelliptic}
 
-\lsubsubsubsection{Checking that \AffineCtEdwards{} coordinates are on the curve}{cctedvalidate}
+\subsubsection{Checking that affine ctEdwards coordinates are on the curve} \label{cctedvalidate}
 
-\vspace{-1ex}
-To check that $(u, \varv)$ is a point on the \ctEdwardsCurve, the \Sapling circuit uses
-$4$ constraints:
+To check that $(u, \varv)$ is a point on the ctEdwards curve, we can use:
 
 \begin{formulae}
   \item $\constraint{u}{u}{uu}$
-  \item $\constraint{\varv}{\varv}{\varvv}$
-  \item $\constraint{uu}{\varvv}{uu\varvv}$
-  \item $\constraint{\ParamJ{a} \smult uu + \varvv}{1}{1 + \ParamJ{d} \smult uu\varvv}$
+  \item $\constraint{\varv}{\varv}{\varv\varv}$
+  \item $\constraint{\ParamJ{d} \mult uu}{\varv\varv}{\ParamJ{a} \mult uu + \varv\varv - 1}$.
 \end{formulae}
 
-\vspace{-3ex}
-\nnote{The last two constraints can be combined into
-$\constraint{\ParamJ{d} \smult uu}{\varvv}{\ParamJ{a} \smult uu + \varvv - 1}$.
-The \Sapling circuit does not use this optimization.}
 
+\subsubsection{ctEdwards [de]compression and validation} \label{ccteddecompressvalidate}
 
-\introsection
-\lsubsubsubsection{ctEdwards [de]compression and validation}{ccteddecompressvalidate}
-
-\introlist
-\vspace{-1ex}
 Define $\DecompressValidate \typecolon \CompressedCtEdwardsJubjub \rightarrow \AffineCtEdwardsJubjub$
 as follows:
 
 \begin{algorithm}
   \item $\DecompressValidate(\tilde{u}, \varv):$
   \item \tab // Prover supplies the $u$-coordinate.
-  \item \tab Let $u \typecolon \Field$.
+  \item \tab Let $u \typecolon \Field{}$.
              \vspace{1ex}
   \item \tab // \crossref{cctedvalidate}.
-  \item \tab Check that $(u, \varv)$ is a point on the \ctEdwardsCurve.
+  \item \tab Check that $(u, \varv)$ is a point on the ctEdwards curve.
              \vspace{1ex}
   \item \tab // \crossref{cctmodpack}.
   \item \tab Unpack $u$ to $\ssum{i=0}{254} u_i \mult 2^i$, equating $\tilde{u}$ with $u_0$.
@@ -2317,141 +2401,120 @@ as follows:
   \item \tab Return $(u, \varv)$.
 \end{algorithm}
 
-This costs $4$ constraints for the curve equation check, $1$ constraint for the
-unpacking, and $387$ constraints for the range check (as computed in \crossref{cctrange})
-for a total of $392$ constraints. The cost of the range check includes
-boolean-constraining $u_\barerange{0}{254}$.
-
-The same \quadraticConstraintProgram is used for compression and decompression.
+The same constraint program is used for compression and decompression.
 
 \nnote{
 The point-on-curve check could be omitted if $(u, \varv)$ were already known to be on the curve.
-However, the \Sapling circuit never omits it; this provides a consistency check on the elliptic
-curve arithmetic.
+However, keeping it in this case provides a consistency check on the elliptic curve arithmetic.
 }
 
 
-\introlist
-\lsubsubsubsection{ctEdwards \lrarrow\ Montgomery conversion}{cctconversion}
+\subsubsection{ctEdwards \lrarrow\ Montgomery conversion} \label{cctconversion}
 
-\vspace{-1ex}
-Define $\CtEdwardsToMont \typecolon \AffineCtEdwardsJubjub \rightarrow \AffineMontJubjub$
+TODO: this was defined for Jubjub; generalize to arbitrary ctEdwards/Montgomery conversions.
+
+Let $c$ be a constant that depends on the curve; for Jubjub, let $c = \possqrt{-40964}$.
+
+Define $\CtEdwardsToMontgomery \typecolon \AffineCtEdwards \rightarrow \AffineMontgomery$
 as follows:
 
 \begin{formulae}
   \item \makebox[25em][l]{$\CtEdwardsToMont(u, \varv) = \left(\frac{1 + \varv}{1 - \varv},\,
-                                                              \scalebox{0.8}{$\ssqrt{-40964}$} \mult \frac{1 + \varv}{(1 - \varv) \mult u}\right)$}
+                                                              c \mult \frac{1 + \varv}{(1 - \varv) \mult u}\right)$}
         $[1 - \varv \neq 0 \tand u \neq 0]$
 \end{formulae}
 
-\introlist
-Define $\MontToCtEdwards \typecolon \AffineMontJubjub \rightarrow \AffineCtEdwardsJubjub$
+Define $\MontgomeryToCtEdwards \typecolon \AffineMontgomery \rightarrow \AffineCtEdwards$
 as follows:
 
 \begin{formulae}
-  \item \makebox[25em][l]{$\MontToCtEdwards(x, y) = \left(\scalebox{0.8}{$\ssqrt{-40964}$} \mult \frac{x}{y},\,
+  \item \makebox[25em][l]{$\MontToCtEdwards(x, y) = \left(c \mult \frac{x}{y},\,
                                                           \frac{x - 1}{x + 1}\right)$}
         $[x + 1 \neq 0 \tand y \neq 0]$
 \end{formulae}
 
-\introlist
-Either of these conversions can be implemented by the same \quadraticConstraintProgram:
+Either of these conversions can be implemented by the same constraint program:
 \begin{formulae}
-  \item $\constraint{y}{u}{\ssqrt{-40964} \mult x}$
+  \item $\constraint{y}{u}{c \mult x}$
         \vspace{-0.5ex}
   \item $\constraint{x + 1}{\varv}{x - 1}$
 \end{formulae}
 
-\vspace{-0.5ex}
 The above conversions should only be used if the input is guaranteed to be
 a point on the relevant curve. If that is the case, the theorems below
 enumerate all exceptional inputs that may violate the side-conditions.
 
-\vspace{-1ex}
-\introlist
-\theoremlabel{thmconversiontomontnoexcept}
 \begin{theorem}[Exceptional points (ctEdwards $\rightarrow$ Montgomery)]
 
-Let $(u, \varv)$ be an affine point on a \ctEdwardsCurve $\ctEdwards{a,d}$.
+Let $(u, \varv)$ be an affine point on a ctEdwards curve $\ctEdwards{a,d}$.
 Then the only points with $u = 0$ or $1 - \varv = 0$ are $(0, 1) = \ZeroJ$, and
 $(0, -1)$ of order $2$.
 \end{theorem}
 
 \begin{proof}
-The curve equation is $a \smult u^2 + \varv^2 = 1 + d \smult u^2 \smult \varv^2$
+The curve equation is $a \mult u^2 + \varv^2 = 1 + d \mult u^2 \mult \varv^2$
 with $a \neq d$ (see \cite[Definition 2.1]{BBJLP2008}). By substituting $u = 0$ we
 obtain $\varv = \pm 1$, and by substituting $\varv = 1$ and using $a \neq d$ we obtain $u = 0$.
 \end{proof}
 
-\vspace{-4ex}
-\introlist
-\theoremlabel{thmconversiontoedwardsnoexcept}
 \begin{theorem}[Exceptional points (Montgomery $\rightarrow$ ctEdwards)]
 
-Let $(x, y)$ be an affine point on a \MontgomeryCurve $\Montgomery{A,B}$ over $\Field{r}$
+Let $(x, y)$ be an affine point on a Montgomery curve $\Montgomery{A,B}$ over $\Field{r}$
 with parameters $A$ and $B$ such that $A^2 - 4$ is a nonsquare in $\Field{r}$,
-that is birationally equivalent to a \ctEdwardsCurve.
+that is birationally equivalent to a ctEdwards curve.
 Then $x + 1 \neq 0$, and the only point $(x, y)$ with $y = 0$ is
 $(0, 0)$ of order 2.
 \end{theorem}
 
 \begin{proof}
-That the only point with $y = 0$ is $(0, 0)$ is proven by \theoremref{thmmontynotzero}.
+That the only point with $y = 0$ is $(0, 0)$ is proven above.
 
-If $x + 1 = 0$, then subtituting $x = -1$ into the \MontgomeryCurve equation gives
+If $x + 1 = 0$, then subtituting $x = -1$ into the Montgomery curve equation gives
 $B \mult y^2 = x^3 + A \mult x^2 + x = A - 2$.
 So in that case $y^2 = (A - 2)/B$. The right-hand-side is equal
-to the parameter $d$ of a particular \ctEdwardsCurve birationally
-equivalent to the \MontgomeryCurve (see \cite[section 4.3.5]{BL2017}).
-For all \ctEdwardsCurves, $d$ is nonsquare, so this equation
+to the parameter $d$ of a particular ctEdwards curve birationally
+equivalent to the Montgomery curve (see \cite[section 4.3.5]{BL2017}).
+For all ctEdwards curves, $d$ is nonsquare, so this equation
 has no solutions for $y$, hence $x + 1 \neq 0$.
 \end{proof}
 
-(When the theorem is applied with $\Montgomery{A,B} = \MontCurve$ defined in \crossref{ecbackground},
-the \ctEdwardsCurve referred to in the proof is an isomorphic
-rescaling of the \jubjubCurve.)
 
+\subsubsection{Affine Montgomery arithmetic} \label{cctmontarithmetic}
 
-\introsection
-\lsubsubsubsection{\AffineMontgomery{} arithmetic}{cctmontarithmetic}
-
-\vspace{-1ex}
-The incomplete \affineMontgomery addition formulae given in
+The incomplete affine Montgomery addition formulae given in
 \cite[section 4.3.2]{BL2017} are:
 
 \begin{formulae}
-  \item $x_3 = \ParamM{B} \smult \lambda^2 - \ParamM{A} - x_1 - x_2$
-  \item $y_3 = (x_1 - x_3) \smult \lambda - y_1$
+  \item $x_3 = \ParamM{B} \mult \lambda^2 - \ParamM{A} - x_1 - x_2$
+  \item $y_3 = (x_1 - x_3) \mult \lambda - y_1$
   \item where $\lambda = \begin{cases}
-          \frac{3 \smult x_1^2 + 2 \smult \ParamM{A} \smult x_1 + 1}{2 \smult \ParamM{B} \smult y_1},
+          \frac{3 \mult x_1^2 + 2 \mult \ParamM{A} \mult x_1 + 1}{2 \mult \ParamM{B} \mult y_1},
                                         &\caseif x_1 = x_2 \\[1.4ex]
           \frac{y_2 - y_1}{x_2 - x_1}, &\caseotherwise.
         \end{cases}$
 \end{formulae}
 
-\introlist
 The following theorem helps to determine when these incomplete addition formulae
-can be safely used:
+can be safely used
+[TODO generalize this to also cover short Weierstrass (as in the Halo paper)]:
 
 \newcommand{\halfs}{\frac{s-1}{2}}
 
-\vspace{-1ex}
-\theoremlabel{thmdistinctx}
-\begin{theorem}[\vphantom{p}Distinct-$x$ theorem]
+\begin{theorem}[Distinct-$x$ theorem]
 
-Let $Q$ be a point of odd-prime order $s$ on a \MontgomeryCurve
-$\MontCurve = \Montgomery{\ParamM{A},\ParamM{B}}$ over $\Field$.
+Let $Q$ be a point of odd-prime order $s$ on a Montgomery curve
+$\MontCurve = \Montgomery{\ParamM{A},\ParamM{B}}$ over $\Field{}$.
 Let $k_\barerange{1}{2}$ be integers in $\bigrangenozero{-\halfs}{\halfs}$.
 Let $P_i = \scalarmult{k_i}{Q} = (x_i, y_i)$ for $i \in \range{1}{2}$, with
 $k_2 \neq \pm k_1$. Then the non-unified addition constraints
 \vspace{-0.5ex}
 \begin{formulae}
   \item $\constraint{x_2 - x_1}{\lambda}{y_2 - y_1}$
-  \item $\constraint{\ParamM{B} \smult \lambda}{\lambda}{\ParamM{A} + x_1 + x_2 + x_3}$
+  \item $\constraint{\ParamM{B} \mult \lambda}{\lambda}{\ParamM{A} + x_1 + x_2 + x_3}$
   \item $\constraint{x_1 - x_3}{\lambda}{y_3 + y_1}$
 \end{formulae}
 \vspace{-0.5ex}
-implement the \affineMontgomery addition $P_1 + P_2 = (x_3, y_3)$ for all such $P_\barerange{1}{2}$.
+implement the affine Montgomery addition $P_1 + P_2 = (x_3, y_3)$ for all such $P_\barerange{1}{2}$.
 \end{theorem}
 
 \begin{proof}
@@ -2468,208 +2531,174 @@ is injective and $k_\barerange{1}{2}$ are in $\bigrange{-\halfs}{\halfs}$,
 then $k_2 = \pm k_1$ (contradiction).
 \end{proof}
 
-The conditions of this theorem are called the \distinctXCriterion.
+The conditions of this theorem are called the distinct-$x$ criterion.
 
 In particular, if $k_\barerange{1}{2}$ are integers in $\bigrange{1}{\halfs}$
 then it is sufficient to require $k_2 \neq k_1$, since that implies
 $k_2 \neq \pm k_1$.
 
-\vspace{2ex}
-\introlist
-\xAffineMontgomery doubling can be implemented as:
+Affine Montgomery doubling can be implemented as:
 
 \begin{formulae}
   \item $\constraint{x}{x}{xx}$
-  \item $\constraint{2 \smult \ParamM{B} \smult y}{\lambda}{3 \smult xx + 2 \smult \ParamM{A} \smult x + 1}$
-  \item $\constraint{\ParamM{B} \smult \lambda}{\lambda}{\ParamM{A} + 2 \smult x + x_3}$
+  \item $\constraint{2 \mult \ParamM{B} \mult y}{\lambda}{3 \mult xx + 2 \mult \ParamM{A} \mult x + 1}$
+  \item $\constraint{\ParamM{B} \mult \lambda}{\lambda}{\ParamM{A} + 2 \mult x + x_3}$
   \item $\constraint{x - x_3}{\lambda}{y_3 + y}$
 \end{formulae}
 
 This doubling formula is valid when $y \neq 0$, which is the case when $(x, y)$
-is not the point $(0, 0)$ (the only point of order $2$), as proven in
-\theoremref{thmmontynotzero}.
+is not the point $(0, 0)$ (the only point of order $2$).
 
 
-\introlist
-\lsubsubsubsection{\AffineCtEdwards{} arithmetic}{cctedarithmetic}
+\subsubsection{Affine ctEdwards arithmetic} \label{cctedarithmetic}
 
-Formulae for \affineCtEdwards addition are given in \cite[section 6]{BBJLP2008}.
+Formulae for affine ctEdwards addition are given in \cite[section 6]{BBJLP2008}.
 With a change of variable names to match our convention, the formulae for
 $(u_1, \varv_1) + (u_2, \varv_2) = (u_3, \varv_3)$ are:
 
 \begin{formulae}
-  \item $u_3     = \cfrac{u_1 \smult \varv_2 + \varv_1 \smult u_2}{1 + \ParamJ{d} \smult u_1 \smult u_2 \smult \varv_1 \smult \varv_2}$
-  \item $\varv_3 = \cfrac{\varv_1 \smult \varv_2 - \ParamJ{a} \smult u_1 \smult u_2}{1 - \ParamJ{d} \smult u_1 \smult u_2 \smult \varv_1 \smult \varv_2}$
+  \item $u_3     = \cfrac{u_1 \mult \varv_2 + \varv_1 \mult u_2}{1 + \ParamJ{d} \mult u_1 \mult u_2 \mult \varv_1 \mult \varv_2}$
+  \item $\varv_3 = \cfrac{\varv_1 \mult \varv_2 - \ParamJ{a} \mult u_1 \mult u_2}{1 - \ParamJ{d} \mult u_1 \mult u_2 \mult \varv_1 \mult \varv_2}$
 \end{formulae}
 
-\introlist
 We use an optimized implementation found by Daira Hopwood making use of an
 observation by Bernstein and Lange in \cite[last paragraph of section 4.5.2]{BL2017}:
 
 \begin{formulae}
-  \item $\constraint{u_1 + \varv_1}{\varv_2 - \ParamJ{a} \smult u_2}{T}$
+  \item $\constraint{u_1 + \varv_1}{\varv_2 - \ParamJ{a} \mult u_2}{T}$
   \item $\constraint{u_1}{\varv_2}{A}$
   \item $\constraint{\varv_1}{u_2}{B}$
-  \item $\constraint{\ParamJ{d} \smult A}{B}{C}$
+  \item $\constraint{\ParamJ{d} \mult A}{B}{C}$
   \item $\constraint{1 + C}{u_3}{A + B}$
-  \item $\constraint{1 - C}{\varv_3}{T - A + \ParamJ{a} \smult B}$
+  \item $\constraint{1 - C}{\varv_3}{T - A + \ParamJ{a} \mult B}$
 \end{formulae}
 
-\introlist
-The correctness of this implementation can be seen by expanding $T - A + \ParamJ{a} \smult B$:
+The correctness of this implementation can be seen by expanding $T - A + \ParamJ{a} \mult B$:
 
 \begin{tabular}{@{\hskip 2em}r@{\;}l}
-  $T - A + \ParamJ{a} \smult B$
-    & $= (u_1 + \varv_1) \mult (\varv_2 - \ParamJ{a} \smult u_2) - u_1 \smult \varv_2 + \ParamJ{a} \smult \varv_1 \smult u_2$ \\
-    & $= \varv_1 \smult \varv_2 - \ParamJ{a} \smult u_1 \smult u_2 + u_1 \smult \varv_2 - \ParamJ{a} \smult \varv_1 \smult u_2
-                                                                   - u_1 \smult \varv_2 + \ParamJ{a} \smult \varv_1 \smult u_2$ \\
-    & $= \varv_1 \smult \varv_2 - \ParamJ{a} \smult u_1 \smult u_2$
+  $T - A + \ParamJ{a} \mult B$
+    & $= (u_1 + \varv_1) \mult (\varv_2 - \ParamJ{a} \mult u_2) - u_1 \mult \varv_2 + \ParamJ{a} \mult \varv_1 \mult u_2$ \\
+    & $= \varv_1 \mult \varv_2 - \ParamJ{a} \mult u_1 \mult u_2 + u_1 \mult \varv_2 - \ParamJ{a} \mult \varv_1 \mult u_2
+                                                                   - u_1 \mult \varv_2 + \ParamJ{a} \mult \varv_1 \mult u_2$ \\
+    & $= \varv_1 \mult \varv_2 - \ParamJ{a} \mult u_1 \mult u_2$
 \end{tabular}
 
-\vspace{2ex}
-\introlist
 The above addition formulae are ``unified'', that is, they can also be
-used for doubling. \xAffineCtEdwards doubling $\scalarmult{2}{(u, \varv)} = (u_3, \varv_3)$
+used for doubling. Affine ctEdwards doubling $\scalarmult{2}{(u, \varv)} = (u_3, \varv_3)$
 can also be implemented slightly more efficiently as:
 
 \begin{formulae}
-  \item $\constraint{u + \varv}{\varv - \ParamJ{a} \smult u}{T}$
+  \item $\constraint{u + \varv}{\varv - \ParamJ{a} \mult u}{T}$
   \item $\constraint{u}{\varv}{A}$
-  \item $\constraint{\ParamJ{d} \smult A}{A}{C}$
-  \item $\constraint{1 + C}{u_3}{2 \smult A}$
-  \item $\constraint{1 - C}{\varv_3}{T + (\ParamJ{a} - 1) \smult A}$
+  \item $\constraint{\ParamJ{d} \mult A}{A}{C}$
+  \item $\constraint{1 + C}{u_3}{2 \mult A}$
+  \item $\constraint{1 - C}{\varv_3}{T + (\ParamJ{a} - 1) \mult A}$
 \end{formulae}
 
 This implementation is obtained by specializing the addition formulae to
 $(u, \varv) = (u_1, \varv_1) = (u_2, \varv_2)$ and observing that $u \mult \varv = A = B$.
 
 
-\introsection
-\lsubsubsubsection{\AffineCtEdwards{} nonsmall-order check}{cctednonsmallorder}
+\subsubsection{Affine ctEdwards nonsmall-order check} \label{cctednonsmallorder}
 
-In order to avoid small-subgroup attacks, we check that certain points used in the
-circuit are not of small order. In practice the \Sapling circuit uses this
-in combination with a check that the coordinates are on the curve (\crossref{cctedvalidate}),
-so we combine the two operations.
+In order to avoid small-subgroup attacks on some protocols, it is useful to be able
+to check that a point is not of small order. Since this normally needs to be done in
+combination with a check that the coordinates are on the curve (\crossref{cctedvalidate}),
+we combine the two operations.
 
-The \jubjubCurve has a large prime-order subgroup with a cofactor of $8$.
-To check for a point $P$ of order $8$ or less, the \Sapling circuit doubles
-three times (as in \crossref{cctedarithmetic}) and checks that the resulting
-$u$-coordinate is not $0$ (as in \crossref{cctnonzero}).
+TODO: this was originally defined for Jubjub (with $h = 8$); check generalization.
 
-On a \ctEdwardsCurve, only the zero point $\ZeroJ$, and the unique point
+ctEdwards curves have a large prime-order subgroup with a cofactor $h = 2^c$ where
+$c \in \{2, 3\}$. To check for a point $P$ of order $h$ or less, we can double $c$ times
+(as in \crossref{cctedarithmetic}) and checks that the resulting $u$-coordinate is not
+$0$ (as in \crossref{cctnonzero}).
+
+On a ctEdwards curve, only the zero point $\ZeroJ$, and the unique point
 of order $2$ at $(0, -1)$ have zero $u$-coordinate. The point of order $2$ cannot
-occur as the result of three doublings. So this $u$-coordinate check rejects
+occur as the result of $c$ doublings. So this $u$-coordinate check rejects
 only $\ZeroJ$.
 
-The total cost, including the curve check, is $4 + 3 \mult 5 + 1 = 20$ constraints.
+The total cost, including the curve check, is $5 \mult c + 5$ constraints.
 
 \pnote{This \emph{does not} ensure that the point is in the prime-order subgroup.}
 
 \begin{nnotes}
-  \item It would have been sufficient to do two doublings rather than three, because
+  \item It would have been sufficient to do $c-1$ doublings, because
         the check that the $u$-coordinate is nonzero would reject both $\ZeroJ$
         and the point of order $2$.
-  \item It is possible to reduce the cost to $8$ constraints by eliminating the
-        redundant constraint in the curve point check (as mentioned in
+  \item It is possible to reduce the cost to $8$ constraints for the case of $c = 3$,
+        by eliminating the redundant constraint in the curve point check (as mentioned in
         \crossref{cctedvalidate}); merging the first doubling with the curve point check;
         and then optimizing the second doubling based on the fact that we only need
         to check whether the resulting $u$-coordinate is zero.
-        The \Sapling circuit does not use these optimizations.
 \end{nnotes}
 
 
-\introsection
-\lsubsubsubsection{Fixed-base \AffineCtEdwards{} scalar multiplication}{cctfixedscalarmult}
+\subsubsection{Fixed-base affine ctEdwards scalar multiplication} \label{cctfixedscalarmult}
 
 If the base point $B$ is fixed for a given scalar multiplication $\scalarmult{k}{B}$,
 we can fully precompute window tables for each window position.
 
+TODO: generalize to non-Jubjub curves.
+
 It is most efficient to use $3$-bit fixed windows. Since the length of
 $\ParamJ{r}$ is $252$ bits, we need $84$ windows.
 
-Express $k$ in base $8$, i.e.\ $k = \vsum{i=0}{83} k_i \smult 8^i$.
+Express $k$ in base $8$, i.e.\ $k = \vsum{i=0}{83} k_i \mult 8^i$.
 
 Then $\scalarmult{k}{B} = \vsum{i=0}{83} w_{(B,\,i,\,k_i)}$, where
-$w_{(B,\,i,\,k_i)} = \scalarmult{k_i \smult 8^i}{B}$.
+$w_{(B,\,i,\,k_i)} = \scalarmult{k_i \mult 8^i}{B}$.
 
 We precompute all of $w_{(B,\,i,\,s)}$ for $i \in \range{0}{83}, s \in \range{0}{7}$.
 
-\introlist
 To look up a given window entry $w_{(B,\,i,\,s)} = (u_s, \varv_s)$, where
-$s = 4 \smult s_2 + 2 \smult s_1 + s_0$, we use:
+$s = 4 \mult s_2 + 2 \mult s_1 + s_0$, we use:
 
 \begin{formulae}
   \item $\constraint{s_1}{s_2}{s\suband}$
-  \item $\lconstraint{s_0} \big(\!- u_0 \smult s\suband \plus u_0 \smult s_2 \plus u_0 \smult s_1 - u_0 \plus u_2 \smult s\suband
-                                  - u_2 \smult s_1 \plus u_4 \smult s\suband - u_4 \smult s_2 - u_6 \smult s\suband \\
-         \mhspace{3.52em}     \plus u_1 \smult s\suband - u_1 \smult s_2 - u_1 \smult s_1 \plus u_1 - u_3 \smult s\suband
-                              \plus u_3 \smult s_1 - u_5 \smult s\suband \plus u_5 \smult s_2 \plus u_7 \smult s\suband\big) = \\
-         \mhspace{1.92em}  \lincomb{u_s - u_0 \smult s\suband \plus u_0 \smult s_2 \plus u_0 \smult s_1 - u_0 \plus u_2 \smult s\suband
-                                  - u_2 \smult s_1 \plus u_4 \smult s\suband - u_4 \smult s_2 - u_6 \smult s\suband}$
-  \item $\lconstraint{s_0} \big(\!- \vv_0 \smult s\suband \plus \vv_0 \smult s_2 \plus \vv_0 \smult s_1 - \vv_0 \plus \vv_2 \smult s\suband
-                                  - \vv_2 \smult s_1 \plus \vv_4 \smult s\suband - \vv_4 \smult s_2 - \vv_6 \smult s\suband \\
-         \mhspace{3.51em}     \plus \vv_1 \smult s\suband - \vv_1 \smult s_2 - \vv_1 \smult s_1 \plus \vv_1 - \vv_3 \smult s\suband
-                              \plus \vv_3 \smult s_1 - \vv_5 \smult s\suband \plus \vv_5 \smult s_2 \plus \vv_7 \smult s\suband\big) = \\
-         \mhspace{1.90em}  \lincomb{\vv_s - \vv_0 \smult s\suband \plus \vv_0 \smult s_2 \plus \vv_0 \smult s_1 - \vv_0 \plus \vv_2 \smult s\suband
-                                  - \vv_2 \smult s_1 \plus \vv_4 \smult s\suband - \vv_4 \smult s_2 - \vv_6 \smult s\suband}$
+  \item $\lconstraint{s_0} \big(\!- u_0 \mult s\suband + u_0 \mult s_2 + u_0 \mult s_1 - u_0 + u_2 \mult s\suband
+                                  - u_2 \mult s_1 + u_4 \mult s\suband - u_4 \mult s_2 - u_6 \mult s\suband \\
+         \mhspace{3.58em}         + u_1 \mult s\suband - u_1 \mult s_2 - u_1 \mult s_1 + u_1 - u_3 \mult s\suband
+                                  + u_3 \mult s_1 - u_5 \mult s\suband + u_5 \mult s_2 + u_7 \mult s\suband\big) = \\
+         \mhspace{1.98em}  \lincomb{u_s - u_0 \mult s\suband + u_0 \mult s_2 + u_0 \mult s_1 - u_0 + u_2 \mult s\suband
+                                  - u_2 \mult s_1 + u_4 \mult s\suband - u_4 \mult s_2 - u_6 \mult s\suband}$
+  \item $\lconstraint{s_0} \big(\!- \varv_0 \mult s\suband + \varv_0 \mult s_2 + \varv_0 \mult s_1 - \varv_0 + \varv_2 \mult s\suband
+                                  - \varv_2 \mult s_1 + \varv_4 \mult s\suband - \varv_4 \mult s_2 - \varv_6 \mult s\suband \\
+         \mhspace{3.59em}         + \varv_1 \mult s\suband - \varv_1 \mult s_2 - \varv_1 \mult s_1 + \varv_1 - \varv_3 \mult s\suband
+                                  + \varv_3 \mult s_1 - \varv_5 \mult s\suband + \varv_5 \mult s_2 + \varv_7 \mult s\suband\big) = \\
+         \mhspace{2.10em}  \lincomb{\varv_s - \varv_0 \mult s\suband + \varv_0 \mult s_2 + \varv_0 \mult s_1 - \varv_0 + \varv_2 \mult s\suband
+                                  - \varv_2 \mult s_1 + \varv_4 \mult s\suband - \varv_4 \mult s_2 - \varv_6 \mult s\suband}$
 \end{formulae}
 
 For a full-length ($252$-bit) scalar this costs $3$ constraints for each of $84$ window lookups,
 plus $6$ constraints for each of $83$ ctEdwards additions (as in \crossref{cctedarithmetic}), for
-a total of $750$ constraints.
+a total of $750$ constraints. This does not include the cost of boolean-constraining the scalar.
 
-Fixed-base scalar multiplication is also used in two places with shorter scalars:
-\begin{itemize}
-  \item \crossref{ccthomomorphiccommit} uses a $64$-bit scalar for the
-        $\Value$ input to $\ValueCommit{}$, requiring
-        $22$ windows at a cost of $3 \smult 22 - 1 + 6 \smult 21 = 191$ constraints;
-  \item \crossref{cctmixinghash} uses a $32$-bit scalar for the
-        $\NotePosition$ input to $\MixingPedersenHash$, requiring
-        $11$ windows at a cost of $3 \smult 11 - 1 + 6 \smult 10 = 92$ constraints.
-\end{itemize}
-
-\vspace{-1ex}
-None of these costs include the cost of boolean-constraining the scalar.
-
-\begin{nnotes}
-        \vspace{-0.5ex}
-  \item It would be more efficient to use arithmetic on the \MontgomeryCurve, as in
-        \crossref{cctpedersenhash}. However since there are only three instances of
-        fixed-base scalar multiplication in the \spendCircuit and two in the
-        \outputCircuit\footnote{A \xPedersenCommitment uses fixed-base scalar multiplication as a subcomponent.},
-        the additional complexity was not considered justified for \Sapling.
-  \item For the multiplications with $64$-bit and $32$-bit scalars, the scalar is
-        padded to a multiple of $3$ bits with zeros. This causes the computation
-        of $s\suband$ in the lookup for the most significant window to be optimized out,
-        which is where the ``$-\;1$'' comes from in the above cost calculations.
-        No further optimization is done for this lookup.
-\end{nnotes}
-\vspace{-2ex}
+\nnote{
+It would be more efficient to use arithmetic on the Montgomery curve, as in \crossref{cctpedersenhash}.
+TODO: describe \url{https://github.com/zcash/zcash/issues/3924}.
+} %nnote
 
 
-\introsection
-\lsubsubsubsection{Variable-base \AffineCtEdwards{} scalar multiplication}{cctvarscalarmult}
+\subsubsection{Variable-base affine ctEdwards scalar multiplication} \label{cctvarscalarmult}
 
-\vspace{-1.5ex}
 When the base point $B$ is not fixed, the method in the preceding section
 cannot be used. Instead we use a naïve double-and-add method.
 
-\introlist
-Given $k = \ssum{i=0}{250} k_i \smult 2^i$, we calculate $R = \scalarmult{k}{B}$ using:
+Given $k = \ssum{i=0}{250} k_i \mult 2^i$, we calculate $R = \scalarmult{k}{B}$ using:
 
 \begin{algorithm}
   \item // $\Base_i = \scalarmult{2^i}{B}$
   \item let $\Base_0 = B$
   \item let $\Acc^u_0 = k_0 \bchoose \Base^u_0 : 0$
-  \item let $\Acc^{\vv}_0\hairspace = k_0 \bchoose \Base^{\vv}_0 : 1$
+  \item let $\Acc^{\varv}_0\hairspace = k_0 \bchoose \Base^{\varv}_0 : 1$
         \vspace{1ex}
   \item for $i$ from $1$ up to $250$:
   \item \tab let $\Base_i = \scalarmult{2}{\Base_{i-1}}$
              \vspace{1ex}
   \item \tab // select $\Base_i$ or $\ZeroJ$ depending on the bit $k_i$
   \item \tab let $\Addend^u_i = k_i \bchoose \Base^u_i : 0$
-  \item \tab let $\Addend^{\vv}_i\hairspace = k_i \bchoose \Base^{\vv}_i : 1$
+  \item \tab let $\Addend^{\varv}_i\hairspace = k_i \bchoose \Base^{\varv}_i : 1$
   \item \tab let $\Acc_i = \Acc_{i-1} + \Addend_i$
   \item let $R = \Acc_{250}$.
 \end{algorithm}
@@ -2680,30 +2709,21 @@ for a total of $3252$ constraints.
 
 \nnote{
 It would be more efficient to use $2$-bit fixed windows, and/or to use arithmetic
-on the \MontgomeryCurve in a similar way to \crossref{cctpedersenhash}. However
-since there are only two instances of variable-base scalar multiplication in the
-\spendCircuit and one in the \outputCircuit, the additional complexity was not
-considered justified for \Sapling.
+on the Montgomery curve in a similar way to \crossref{cctpedersenhash}.
 } %nnote
 
 
-\introsection
-\lsubsubsubsection{Pedersen hash}{cctpedersenhash}
+\subsubsection{Bowe--Hopwood Pedersen hash} \label{cctpedersenhash}
 
-The specification of the \xPedersenHashes used in \Sapling is given in
+The specification of Bowe--Hopwood Pedersen hashes is given in
 \crossref{concretepedersenhash}. It is based on the scheme from
 \cite[section 5.2]{CvHP1991} --for which a tighter security reduction to
 the Discrete Logarithm Problem was given in \cite{BGG1995}-- but tailored
 to allow several optimizations in the circuit implementation.
 
-\xPedersenHashes are the single most commonly used primitive in the
-\Sapling circuits. $\MerkleDepthSapling$ \xPedersenHash instances are used
-in the \spendCircuit to check a \merklePath to the \noteCommitment of the
-\note being spent. We also reuse the \xPedersenHash implementation to
-construct the \commitmentScheme $\NoteCommitSaplingAlg$.
-
-This motivates considerable attention to optimizing this circuit
-implementation of this primitive, even at the cost of complexity.
+Since hash functions are often the bottleneck in applications (such as
+Zcash Sapling), this motivates considerable attention to optimizing the
+circuit implementation of this primitive, even at the cost of complexity.
 
 First, we use a windowed scalar multiplication algorithm with signed digits.
 Each $3$-bit message chunk corresponds to a window; the chunk is encoded
@@ -2713,20 +2733,19 @@ if the set $\range{1}{8}$ had been used, because a point can be conditionally
 negated using only a single constraint.
 
 Next, we optimize the cost of point addition by allowing as many additions
-as possible to be performed on the \MontgomeryCurve. An incomplete
+as possible to be performed on the Montgomery curve. An incomplete
 Montgomery addition costs $3$ constraints, in comparison with a
 ctEdwards addition which costs $6$ constraints.
 
-However, we cannot do all additions on the \MontgomeryCurve because the
+However, we cannot do all additions on the Montgomery curve because the
 Montgomery addition is incomplete. In order to be able to prove that
-exceptional cases do not occur, we need to ensure that the \distinctXCriterion
+exceptional cases do not occur, we need to ensure that the distinct-$x$ criterion
 from \crossref{cctmontarithmetic} is met. This requires splitting the
 input into segments (each using an independent generator), calculating
 an intermediate result for each segment, and then converting to the
-\ctEdwardsCurve and summing the intermediate results using
+ctEdwards curve and summing the intermediate results using
 ctEdwards addition.
 
-\introlist
 Abstracting away the changes of curve, this calculation can be written as:
 
 \begin{formulae}
@@ -2736,17 +2755,15 @@ Abstracting away the changes of curve, this calculation can be written as:
 where $\PedersenEncode{\paramdot}$ and $\PedersenGen{D}{j}$
 are defined as in \crossref{concretepedersenhash}.
 
-\introlist
-\vspace{1ex}
 We have to prove that:
 \begin{itemize}
   \item the Montgomery-to-ctEdwards conversions can be implemented without
         exceptional cases;
-  \item the \distinctXCriterion is met for all Montgomery additions within
+  \item the distinct-$x$ criterion is met for all Montgomery additions within
         a segment.
 \end{itemize}
 
-The proof of \theoremref{thmpedersenencodeinjective} showed that
+The proof in \crossref{concretepedersenhash} showed that
 all indices of addition inputs are in the range
 $\bigrangenozero{-\frac{\ParamJ{r}-1}{2}}{\frac{\ParamJ{r}-1}{2}}$.
 
@@ -2755,14 +2772,13 @@ are all of prime order, and $\PedersenEncode{M_j} \neq 0 \pmod{\ParamJ{r}}$,
 it is guaranteed that all of the terms
 $\scalarmult{\PedersenEncode{M_j}}{\PedersenGen{D}{j}}$
 to be converted to ctEdwards form are of prime order.
-From \theoremref{thmconversiontoedwardsnoexcept}, we can infer that
+From the proof in \crossref{cctconversion}, we can infer that
 the conversions will not encounter exceptional cases.
 
 We also need to show that the indices of addition inputs are
 all distinct disregarding sign.
 
-\theoremlabel{thmpedersendistinctabsindices}
-\begin{theorem}[Concerning addition inputs in the Pedersen circuit]
+\begin{theorem}
 
 For all disjoint nonempty subsets $S$ and $S'$ of $\range{1}{c}$, all
 $m \in \typeexp{\bitseq{3}}{c}$, and all $\Sign \in \setof{-1, 1}$:
@@ -2785,7 +2801,7 @@ Define $\enc' \typecolon \setof{-1, 1} \times \bitseq{3} \rightarrow \range{0}{8
 $\enc'_\theta(m_i) := 4 + \theta \mult \enc(m_i)$.
 
 Let $\PedersenRangeOffset = 4 \mult \ssum{i=1}{c} 2^{4 \mult (i-1)}$
-as in the proof of \theoremref{thmpedersenencodeinjective}.
+as in the proof in \crossref{concretepedersenhash}.
 By adding $\PedersenRangeOffset$ to both sides, we get
 \begin{formulae}
   \item $\vsum{j \in S\vphantom{S'}}{} \enc'_1(m_j) \mult 2^{4 \mult (j-1)} + \vsum{j \in \range{1}{c} \setminus S\vphantom{S'}}{} 4 \mult 2^{4 \mult (j-1)} =
@@ -2803,7 +2819,7 @@ the corresponding right hand side digit is $4$; contradiction.
 
 This implies that the terms in the Montgomery addition --as well as any intermediate
 results formed from adding a distinct subset of terms-- have distinct indices
-disregarding sign, hence distinct $x$-coordinates by \theoremref{thmdistinctx}.
+disregarding sign, hence distinct $x$-coordinates by the proof in \crossref{cctmontarithmetic}.
 (We make no assumption about the order of additions.)
 
 We now describe the subcircuit used to process each chunk, which contributes most of
@@ -2816,14 +2832,12 @@ Suppose that the bits of the chunk, $[s_0, s_1, s_2]$, are already boolean-const
 We aim to compute $C = A + \scalarmult{(1 - 2 \mult s_2) \mult (1 + s_0 + 2 \mult s_1)}{P}$
 for some fixed base point $P$ and accumulated sum $A$.
 
-\introlist
 We first compute $s\suband = s_0 \land s_1$:
 
 \begin{formulae}
   \item $\constraint{s_0}{s_1}{s\suband}$
 \end{formulae}
 
-\introlist
 Let $(x_k, y_k) = \scalarmult{k}{P}$ for $k \in \range{1}{4}$. Define each coordinate of
 $(x_S, y_R) = \scalarmult{1 + s_0 + 2 \mult s_1}{P}$ as a linear combination of $s_0$, $s_1$, and $s\suband$:
 
@@ -2832,7 +2846,6 @@ $(x_S, y_R) = \scalarmult{1 + s_0 + 2 \mult s_1}{P}$ as a linear combination of 
   \item let $y_R\hspace{0.01em} = \yy_1 + (\yy_2-\yy_1) \mult s_0 + (\yy_3-\yy_1) \mult s_1 + (\yy_4+\yy_1-\yy_2-\yy_3) \mult s\suband$
 \end{formulae}
 
-\introlist
 We implement the conditional negation as $\constraint{2 \mult y_R}{s_2}{y_R - y_S}$.
 After substitution of $y_R$ this becomes:
 
@@ -2841,613 +2854,42 @@ After substitution of $y_R$ this becomes:
          \mhspace{1.45em}\lincomb{y_1 + (y_2-y_1) \mult s_0 + (y_3-y_1) \mult s_1 + (y_4+y_1-y_2-y_3) \mult s\suband - y_S}$
 \end{formulae}
 
-\introlist
 Then we substitute $x_S$ into the Montgomery addition constraints from \crossref{cctmontarithmetic}, as follows:
 
 \begin{formulae}
   \item $\constraint{x_1 + (x_2-x_1) \mult s_0 + (x_3-x_1) \mult s_1 + (x_4+x_1-x_2-x_3) \mult s\suband - x_A}{\lambda}{y_S - y_A}$
-  \item $\constraint{\ParamM{B} \smult \lambda}{\lambda}{\ParamM{A} + x_A + x_1 + (x_2-x_1) \mult s_0 + (x_3-x_1) \mult s_1 + (x_4+x_1-x_2-x_3) \mult s\suband + x_C}$
+  \item $\constraint{\ParamM{B} \mult \lambda}{\lambda}{\ParamM{A} + x_A + x_1 + (x_2-x_1) \mult s_0 + (x_3-x_1) \mult s_1 + (x_4+x_1-x_2-x_3) \mult s\suband + x_C}$
   \item $\constraint{x_A - x_C}{\lambda}{y_C + y_A}$
 \end{formulae}
-
-(In the sapling-crypto implementation, linear combinations are first-class values, so these substitutions
-do not need to be done ``by hand''.)
 
 For the first addition in each segment, both sides are looked up and substituted into the Montgomery
 addition, so the first lookup takes only $2$ constraints.
 
-When these hashes are used in the circuit, the first 6 bits of the input
-are fixed. For example, in the Merkle tree hashes they represent the layer number.
-This would allow a precomputation for the first two windows, but that
-optimization is not done in \Sapling.
+If part of the input is fixed, then a precomputation may be possible for some
+of the windows.
 
 The cost of a Pedersen hash over $\ell$ bits (where $\ell$ includes the fixed
 bits) is as follows. The number of chunks is $c = \ceiling{\frac{\ell}{3}}$ and
 the number of segments is $n = \ceiling{\frac{\ell}{3 \mult 63}}$.
 
-\introlist
 The cost is then:
 
 \begin{itemize}
-  \item $2 \smult c$ constraints for the lookups;
-  \item $3 \smult (c-n)$ constraints for incomplete additions on the \MontgomeryCurve;
-  \item $2 \smult n$ constraints for Montgomery-to-ctEdwards conversions;
-  \item $6 \smult (n-1)$ constraints for ctEdwards additions;
+  \item $2 \mult c$ constraints for the lookups;
+  \item $3 \mult (c-n)$ constraints for incomplete additions on the Montgomery curve;
+  \item $2 \mult n$ constraints for Montgomery-to-ctEdwards conversions;
+  \item $6 \mult (n-1)$ constraints for ctEdwards additions;
 \end{itemize}
 
-\vspace{-1ex}
-for a total of $5 \smult c + 5 \smult n - 6$ constraints. This does not include
+for a total of $5 \mult c + 5 \mult n - 6$ constraints. This does not include
 the cost of boolean-constraining inputs.
 
-\introlist
-In particular,
-\begin{itemize}
-  \item for the Merkle tree hashes $\ell = 516$, so $c = 172$, $n = 3$,
-        and the cost is $869$ constraints;
-  \item when a Pedersen hash is used to implement part of a Pedersen commitment
-        for $\NoteCommitSapling{}$ (\crossref{concretesaplingnotecommit}),
-        $\ell = 6 + \ValueLength + 2 \smult \ellJ = 582$, $c = 194$, and $n = 4$,
-        so the cost of the hash alone is $984$ constraints.
-\end{itemize}
 
+\section{Batching Optimizations} \label{batching}
 
-\introlist
-\lsubsubsubsection{Mixing Pedersen hash}{cctmixinghash}
+\subsection{RedDSA batch verification} \label{reddsabatchvalidate}
 
-A mixing \xPedersenHash is used to compute $\NoteAddressRand$ from
-$\cm$ and $\NotePosition$ in \crossref{commitmentsandnullifiers}. It takes as
-input a \xPedersenCommitment $P$, and hashes it with another input $x$.
-
-Let $\NotePositionBase$ be as defined in \crossref{concretemixinghash}.
-
-\introlist
-We define $\MixingPedersenHash \typecolon \range{0}{\ParamJ{r}-1}
-\times \GroupJ \rightarrow \GroupJ$ by:
-
-\begin{formulae}
-  \item $\MixingPedersenHash(P, x) := P + \scalarmult{x}{\NotePositionBase}$.
-\end{formulae}
-
-This costs $92$ constraints for a scalar multiplication
-(\crossref{cctfixedscalarmult}), and $6$ constraints for a ctEdwards addition
-(\crossref{cctedarithmetic}), for a total of $98$ constraints.
-
-
-\introsection
-\lsubsubsection{Merkle path check}{cctmerklepath}
-
-Checking each layer of a Merkle authentication path, as described in \crossref{merklepath},
-requires to:
-
-\begin{itemize}
-  \item boolean-constrain the path bit specifying whether the previous node
-        is a left or right child;
-  \item conditionally swap the previous-layer and sibling hashes
-        (as $\Field{r}$ elements) depending on the path bit;
-  \item unpack the left and right hash inputs to two sequences of $255$ bits;
-  \item compute the Merkle hash for this node.
-\end{itemize}
-
-The unpacking need not be canonical in the sense discussed in \crossref{cctmodpack};
-that is, it is \emph{not} necessary to ensure that the left or right inputs to the
-hash represent integers in the range $\range{0}{\ParamS{r}-1}$.
-Since the root of the Merkle tree is calculated outside the circuit using the
-canonical representations, and since the \xPedersenHashes are collision resistant
-on arbitrary bit-sequence inputs, an attempt by an adversarial prover to use a
-non-canonical input would result in the wrong root being calculated, and the
-overall path check would fail.
-
-For each layer, the cost is $1 + 2 \smult 255$ boolean constraints,
-$2$ constraints for the conditional swap (implemented as two selection
-constraints), and $869$ constraints for the Merkle hash (\crossref{cctpedersenhash}),
-for a total of $1380$ constraints.
-
-\nnote{The conditional swap $(a_0, a_1) \mapsto (c_0, c_1)$ could be implemented
-in only one constraint by substituting $c_1 = a_0 + a_1 - c_0$ into the
-uses of $c_1$. The \Sapling circuit does not use this optimization.}
-
-
-\introsection
-\lsubsubsection{\WindowedPedersenCommitment}{cctwindowedcommit}
-
-We construct \windowedPedersenCommitments by reusing the Pedersen hash
-implementation described in \crossref{cctpedersenhash}, and adding a
-randomized point:
-
-\begin{formulae}
-  \item $\WindowedPedersenCommit{r}(s) =
-           \PedersenHashToPoint\Of{\ascii{Zcash\_PH}, s}\, + \scalarmult{r}{\FindGroupJHash\Of{\ascii{Zcash\_PH}, \ascii{r}}}$
-\end{formulae}
-
-\introlist
-This can be implemented in:
-\begin{itemize}
-  \item $5 \smult c + 5 \smult n - 6$ constraints for the Pedersen hash applied to
-        $\ell = 6 + \length(s)$ bits, where $c = \ceiling{\frac{\ell}{3}}$ and
-        $n = \ceiling{\frac{\ell}{3 \mult 63}}$;
-  \item $750$ constraints for the fixed-base scalar multiplication;
-  \item $6$ constraints for the final ctEdwards addition.
-\end{itemize}
-
-When $\WindowedPedersenCommit{}$ is used to instantiate $\NoteCommitSapling{}$,
-the cost of the Pedersen hash is $984$ constraints as calculated in
-\crossref{cctpedersenhash}, and so the total cost in that case is $1740$ constraints.
-This does not include the cost of boolean-constraining the input $s$ or the
-randomness $r$.
-
-
-\lsubsubsection{\HomomorphicPedersenCommitment}{ccthomomorphiccommit}
-
-The \windowedPedersenCommitments defined in the preceding section are
-highly efficient, but they do not support the homomorphic property we
-need when instantiating $\ValueCommit{}$.
-
-\introlist
-In order to support this property, we also define \homomorphicPedersenCommitments
-as follows:
-
-\begin{formulae}
-  \item $\HomomorphicPedersenCommit{\ValueCommitRand}(D, \Value) =
-           \scalarmult{\Value}{\FindGroupJHash\Of{D, \ascii{v}}}\, + \scalarmult{\ValueCommitRand}{\FindGroupJHash\Of{D, \ascii{r}}}$
-\end{formulae}
-
-In the case that we need for $\ValueCommit{}$, $\Value$ has $64$
-bits\footnote{It would be sufficient to use $51$ bits, which accomodates the range
-$\range{0}{\MAXMONEY}$, but the \Sapling circuit uses $64$.}.
-This value is given as a bit representation, which does not need to be constrained
-equal to an integer.
-
-\introlist
-$\ValueCommit{}$ can be implemented in:
-\vspace{1ex}
-\begin{itemize}
-  \item $750$ constraints for the $252$-bit fixed-base multiplication by $\ValueCommitRand$;
-  \item $191$ constraints for the $64$-bit fixed-base multiplication by $\Value$;
-  \item $6$ constraints for the ctEdwards addition
-\end{itemize}
-\vspace{-1.5ex}
-for a total cost of $947$ constraints. This does not include the cost to boolean-constrain
-the input $\Value$ or randomness $\ValueCommitRand$.
-
-
-\intropart
-\lsubsubsection{BLAKE2s hashes}{cctblake2s}
-
-\introlist
-$\BlakeTwosGeneric$ is defined in \cite{ANWW2013}. Its main subcomponent is a
-``$G$ function'', defined as follows:
-
-\begin{formulae}
-  \item $G \typecolon \range{0}{9} \times \typeexp{\binaryrange{32}}{4} \rightarrow \typeexp{\binaryrange{32}}{4}$
-  \item $G(a, b, c, d, x, y) = (a'', b'', c'', d'')$ where
-  \item \begin{tabular}{@{\tab}l@{\;}l}
-          $a' $ &$= (a + b + x) \bmod 2^{32}$ \\
-          $d' $ &$= (d \xor a') \rotr 16$ \\
-          $c' $ &$= (c + d') \bmod 2^{32}$ \\
-          $b' $ &$= (b \xor c') \rotr 12$ \\
-          $a''$ &$= (a' + b' + y) \bmod 2^{32}$ \\
-          $d''$ &$= (d' \xor a'') \rotr 8$ \\
-          $c''$ &$= (c' + d'') \bmod 2^{32}$ \\
-          $b''$ &$= (b' \xor c'') \rotr 7$ \\
-        \end{tabular}
-\end{formulae}
-
-\introlist
-The following table is used to determine which message words the $x$ and $y$ arguments
-to $G$ are selected from:
-
-\begin{tabular}{@{\tab}S@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}R@{}S@{}S}
-  \sigma_0 = [& 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 &10 &11 &12 &13 &14 &15 &] \\
-  \sigma_1 = [&14 &10 & 4 & 8 & 9 &15 &13 & 6 & 1 &12 & 0 & 2 &11 & 7 & 5 & 3 &] \\
-  \sigma_2 = [&11 & 8 &12 & 0 & 5 & 2 &15 &13 &10 &14 & 3 & 6 & 7 & 1 & 9 & 4 &] \\
-  \sigma_3 = [& 7 & 9 & 3 & 1 &13 &12 &11 &14 & 2 & 6 & 5 &10 & 4 & 0 &15 & 8 &] \\
-  \sigma_4 = [& 9 & 0 & 5 & 7 & 2 & 4 &10 &15 &14 & 1 &11 &12  &6 & 8 & 3 &13 &] \\
-  \sigma_5 = [& 2 &12 & 6 &10 & 0 &11  &8 & 3 & 4 &13 & 7 & 5 &15 &14 & 1 & 9 &] \\
-  \sigma_6 = [&12 & 5 & 1 &15 &14 &13 & 4 &10 & 0 & 7 & 6 & 3 & 9 & 2 & 8 &11 &] \\
-  \sigma_7 = [&13 &11 & 7 &14 &12 & 1 & 3 & 9 & 5 & 0 &15 & 4 & 8 & 6 & 2 &10 &] \\
-  \sigma_8 = [& 6 &15 &14 & 9 &11 & 3 & 0 & 8 &12 & 2 &13 & 7 & 1 & 4 &10 & 5 &] \\
-  \sigma_9 = [&10 & 2 & 8 & 4 & 7 & 6 & 1 & 5 &15 &11 & 9 &14 & 3 &12 &13 & 0 &] \\
-\end{tabular}
-
-\introlist
-\vspace{2ex}
-The Initialization Vector is defined as:
-
-\begin{tabular}{@{\tab}S@{}R@{}R@{}R@{}U}
-  \BlakeIV \typecolon \typeexp{\binaryrange{32}}{8} := [\,
-      &\hexint{6A09E667} &\hexint{BB67AE85} &\hexint{3C6EF372} &\hexint{A54FF53A}    \\
-      &\hexint{510E527F} &\hexint{9B05688C} &\hexint{1F83D9AB} &\hexint{5BE0CD19}\,] \\
-\end{tabular}
-
-\vspace{2ex}
-\intropart
-The full hash function applied to an $8$-byte personalization string and a single
-$64$-byte block, in sequential mode with $32$-byte output, can be expressed as follows.
-
-Define $\BlakeTwos{256} \typecolon (p \typecolon \byteseq{8}) \times (x \typecolon \byteseq{64}) \rightarrow \byteseq{32}$ as:
-
-\begin{formulae}
-  \item let $\BlakeParamBlock \typecolon \byteseq{32} = [32, 0, 1, 1] \bconcat\, \zerobytes{20} \bconcat p$
-  \item let $[\,t_0, t_1, f_0, f_1\,] \typecolon \typeexp{\binaryrange{32}}{4} = [\,0, 0, 0, \hexint{FFFFFFFF}, 0\,]$
-  \item \vspace{-3ex}
-  \item let $h \typecolon \typeexp{\binaryrange{32}}{8} =
-             \listcomp{\LEOStoIPOf{32}{\BlakeParamBlock_{\barerange{4 \mult i}{4 \mult i\,+\,3}}} \xor \BlakeIV_i \for i \from 0 \upto 7}$
-  \item let $v \typecolon \typeexp{\binaryrange{32}}{16} =
-             h \bconcat\,[\,\BlakeIV_0, \BlakeIV_1, \BlakeIV_2, \BlakeIV_3,
-                            t_0 \xor \BlakeIV_4, t_1 \xor \BlakeIV_5, f_0 \xor \BlakeIV_6, f_1 \xor \BlakeIV_7\,]$
-  \item let $m \typecolon \typeexp{\binaryrange{32}}{16} =
-             \listcomp{\LEOStoIPOf{32}{x_{\barerange{4 \mult i}{4 \mult i\,+\,3}}} \for i \from 0 \upto 15}$
-        \vspace{1ex}
-  \item for $r$ from $0$ up to $9$:
-        \vspace{-2ex}
-  \item \begin{tabular}{@{\tab set\;}T@{}T@{}T@{}U@{}T@{}T@{}T@{}T@{}T@{}U@{}U}
-          (v_{ 0}, &v_{ 4}, &v_{ 8}, &v_{12}&) := G(v_{ 0}, &v_{ 4}, &v_{ 8}, &v_{12}, &m_{\sigma_{r, 0}}, &m_{\sigma_{r, 1}}&) \\
-          (v_{ 1}, &v_{ 5}, &v_{ 9}, &v_{13}&) := G(v_{ 1}, &v_{ 5}, &v_{ 9}, &v_{13}, &m_{\sigma_{r, 2}}, &m_{\sigma_{r, 3}}&) \\
-          (v_{ 2}, &v_{ 6}, &v_{10}, &v_{14}&) := G(v_{ 2}, &v_{ 6}, &v_{10}, &v_{14}, &m_{\sigma_{r, 4}}, &m_{\sigma_{r, 5}}&) \\
-          (v_{ 3}, &v_{ 7}, &v_{11}, &v_{15}&) := G(v_{ 3}, &v_{ 7}, &v_{11}, &v_{15}, &m_{\sigma_{r, 6}}, &m_{\sigma_{r, 7}}&) \\[1ex]
-          (v_{ 0}, &v_{ 5}, &v_{10}, &v_{15}&) := G(v_{ 0}, &v_{ 5}, &v_{10}, &v_{15}, &m_{\sigma_{r, 8}}, &m_{\sigma_{r, 9}}&) \\
-          (v_{ 1}, &v_{ 6}, &v_{11}, &v_{12}&) := G(v_{ 1}, &v_{ 6}, &v_{11}, &v_{12}, &m_{\sigma_{r,10}}, &m_{\sigma_{r,11}}&) \\
-          (v_{ 2}, &v_{ 7}, &v_{ 8}, &v_{13}&) := G(v_{ 2}, &v_{ 7}, &v_{ 8}, &v_{13}, &m_{\sigma_{r,12}}, &m_{\sigma_{r,13}}&) \\
-          (v_{ 3}, &v_{ 4}, &v_{ 9}, &v_{14}&) := G(v_{ 3}, &v_{ 4}, &v_{ 9}, &v_{14}, &m_{\sigma_{r,14}}, &m_{\sigma_{r,15}}&) \\
-        \end{tabular}
-  \item \vspace{-1ex}
-  \item return $\LEBStoOSPOf{256}{\concatbits\Of{\listcomp{\ItoLEBSPOf{32}{h_i \xor v_i \xor v_{i+8}} \for i \from 0 \upto 7}}}$
-\end{formulae}
-
-In practice the message and output will be expressed as bit sequences. In the \Sapling
-circuit, the personalization string will be constant for each use.
-
-Each 32-bit exclusive-or is implemented in $32$ constraints, one for each bit position
-$a \xor b = c$ as in \crossref{cctxor}.
-
-Additions not involving a message word, i.e.\ $(a + b) \bmod 2^{32} = c$, are implemented
-using $33$ constraints and a $33$-bit equality check: constrain $33$ boolean variables
-$c_{\barerange{0}{32}}$, and then check
-$\ssum{i=0}{i=31}{(a_i + b_i) \mult 2^i} = \ssum{i=0}{i=32}{c_i \mult 2^i}$.
-
-Additions involving a message word, i.e.\ $(a + b + m) \bmod 2^{32} = c$, are implemented
-using $34$ constraints and a 34-bit equality check: constrain $34$ boolean variables
-$c_{\barerange{0}{33}}$, and then check
-$\ssum{i=0}{i=31}{(a_i + b_i + m_i) \mult 2^i} = \ssum{i=0}{i=33}{c_i \mult 2^i}$.
-
-For each addition, only $c_{\barerange{0}{31}}$ are used subsequently.
-
-The equality checks are batched; as many sets of $33$ or $34$ boolean variables as
-will fit in a $\Field$ field element are equated together using one constraint.
-This allows $7$ such checks per constraint.
-
-\vspace{1ex}
-\introlist
-Each $G$ evaluation requires $262$ constraints:
-\begin{itemize}
-  \item $4 \mult 32 = 128$ constraints for $\xor$ operations;
-  \item $2 \mult 33 = 66$ constraints for $32$-bit additions not involving message words
-        (excluding equality checks);
-  \item $2 \mult 34 = 68$ constraints for $32$-bit additions involving message words
-        (excluding equality checks).
-\end{itemize}
-
-\introlist
-The overall cost is $21006$ constraints:
-\begin{itemize}
-  \item $10 \mult 8 \mult 262 - 4 \mult 2 \mult 32 = 20704$ constraints for
-        $80$ $G$ evaluations, excluding equality checks (the deduction of
-        $4 \mult 2 \mult 32$ is because $v$ is constant at the start of the
-        first round, so in the first four calls to $G$, the parameters $b$ and
-        $d$ are constant, eliminating the constraints for the first two XORs
-        in those four calls to $G$);
-  \item $\ceiling{\frac{10 \mult 8 \mult 4}{7}} = 46$ constraints for equality checks;
-  \item $8 \mult 32 = 256$ constraints for final $v_i \xor v_{i+8}$ operations
-        (the $h_i$ words are constants so no additional constraints
-        are required to exclusive-or with them).
-\end{itemize}
-
-This cost includes boolean-constraining the hash output bits (done implicitly by the
-final $\xor$ operations), but not the message bits.
-
-\begin{nnotes}
-  \item The equality checks could be eliminated entirely by substituting each check
-        into a boolean constraint for $c_0$, for instance, but this optimization
-        is not done in \Sapling.
-  \item It should be clear that $\BlakeTwosGeneric$ is very expensive in the circuit
-        compared to elliptic curve operations. This is primarily because it is
-        inefficient to use $\Field$ elements to represent single bits.
-        However Pedersen hashes do not have the necessary cryptographic properties
-        for the two cases where the \spendCircuit uses $\BlakeTwosGeneric$.
-        While it might be possible to use variants of functions with low circuit cost
-        such as MiMC \cite{AGRRT2017}, it was felt that they had not yet received
-        sufficient cryptanalytic attention to confidently use them for \Sapling.
-\end{nnotes}
-
-
-\pagebreak
-\lsubsection{The \SaplingText{} Spend circuit}{cctsaplingspend}
-
-The \Sapling Spend \statement is defined in \crossref{spendstatement}.
-
-The primary input is
-\vspace{1ex}
-\begin{formulae}
-  \item $\oparen\rt \typecolon \MerkleHashSapling,\\
-         \hparen\cvOld{} \typecolon \ValueCommitOutput,\\
-         \hparen\nfOld{} \typecolon \bitseq{\PRFOutputLengthNfSapling},\\
-         \hparen\AuthSignRandomizedPublic \typecolon \SpendAuthSigPublic\cparen$,
-\end{formulae}
-which is encoded as $8$ $\Field$ elements (starting with the fixed element $1$ required by $\Groth$):
-\begin{formulae}
-  \item $[1, \Selectu(\AuthSignRandomizedPublic), \Selectv(\AuthSignRandomizedPublic),
-          \Selectu(\cvOld{}), \Selectv(\cvOld{}), \LEBStoIPOf{\MerkleHashLengthSapling}{\rt},
-          \LEBStoIP{254}\big(\nfOld{\barerange{0}{253}}\big), \LEBStoIP{2}\big(\nfOld{\barerange{254}{255}}\big)]$
-\end{formulae}
-
-\introlist
-The auxiliary input is
-\vspace{1ex}
-\begin{formulae}
-  \item $\oparen\TreePath{} \typecolon \typeexp{\MerkleHash}{\MerkleDepthSapling},\\
-         \hparen\NotePosition \typecolon \NotePositionTypeSapling,\vspace{0.4ex}\\
-         \hparen\DiversifiedTransmitBase \typecolon \GroupJ,\\
-         \hparen\DiversifiedTransmitPublic \typecolon \GroupJ,\vspace{0.6ex}\\
-         \hparen\vOld{} \typecolon \ValueType,\\
-         \hparen\ValueCommitRandOld{} \typecolon \binaryrange{\ScalarLength},\\
-         \hparen\cmOld{} \typecolon \GroupJ,\\
-         \hparen\NoteCommitRandOld{} \typecolon \binaryrange{\ScalarLength},\\
-         \hparen\AuthSignRandomizer \typecolon \binaryrange{\ScalarLength},\\
-         \hparen\AuthSignPublic \typecolon \SpendAuthSigPublic,\\
-         \hparen\AuthProvePrivate \typecolon \binaryrange{\ScalarLength}\cparen$.
-\end{formulae}
-
-\introlist
-$\ValueCommitOutput$ and $\SpendAuthSigPublic$ are of type $\GroupJ$, so we have
-$\cvOld{}$, $\cmOld{}$, $\AuthSignRandomizedPublic$, $\DiversifiedTransmitBase$,
-$\DiversifiedTransmitPublic$, and $\AuthSignPublic$ that
-represent \jubjubCurve points. However,
-\vspace{1ex}
-\begin{itemize}
-  \item $\cvOld{}$ will be constrained to an output of $\ValueCommit{}$;
-  \item $\cmOld{}$ will be constrained to an output of $\NoteCommitSapling{}$;
-  \item $\AuthSignRandomizedPublic$ will be constrained to
-        $\scalarmult{\AuthSignRandomizer}{\AuthSignBase} + \AuthSignPublic$;
-  \item $\DiversifiedTransmitPublic$ will be constrained to
-        $\scalarmult{\InViewingKey}{\DiversifiedTransmitBase}$
-\end{itemize}
-\vspace{-1ex}
-so $\cvOld{}$, $\cmOld{}$, $\AuthSignRandomizedPublic$, and $\DiversifiedTransmitPublic$
-do not need to be explicitly checked to be on the curve.
-
-In addition, $\AuthProvePublicRepr$ and $\NoteAddressRandRepr$ used in
-\textbf{Nullifier integrity} are compressed representations of
-\jubjubCurve points.
-\todo{explain why these are implemented as \crossref{ccteddecompressvalidate} even
-though the statement spec doesn't explicitly say to do validation.}
-
-Therefore we have $\DiversifiedTransmitBase$, $\AuthSignPublic$, $\AuthProvePublic$,
-and $\NoteAddressRand$ that need to be constrained to valid \jubjubCurve points as
-described in \crossref{ccteddecompressvalidate}.
-
-\introsection
-In order to aid in comparing the implementation with the specification,
-we present the checks needed in the order in which they are implemented
-in the sapling-crypto code:
-
-\begin{center}
-\begin{tabular}{|p{16em}|l|C|l|}
-\hline
-Check & Implements & \heading{Cost} & Reference \\
-\hhline{|=|=|=|=|}
-
-  $\AuthSignPublic$ is on the curve \small\todo{FIXME also decompressed below}
-      & $\AuthSignPublic \typecolon \SpendAuthSigPublic$
-      & 4     & \shortcrossref{cctedvalidate} \\ \hline
-  $\AuthSignPublic$ is not small order
-      & \snarkref{Small order checks}{spendnonsmall}
-      & 16    & \shortcrossref{cctednonsmallorder} \\ \hline
-  $\AuthSignRandomizerRepr \typecolon \bitseq{\ScalarLength}$
-      & $\AuthSignRandomizer \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\AuthSignRandomizer' = \scalarmult{\AuthSignRandomizerRepr}{\AuthSignBase}$
-      & \snarkref{Spend authority}{spendauthority}
-      & 750   & \shortcrossref{cctfixedscalarmult} \\ \cline{1-1}\cline{3-4}
-  $\AuthSignRandomizedPublic = \AuthSignRandomizer' + \AuthSignPublic$
-      &
-      & 6     & \shortcrossref{cctedarithmetic} \\ \hline
-  inputize $\AuthSignRandomizedPublic$ \small\todo{not ccteddecompressvalidate => wrong count}
-      & $\AuthSignRandomizedPublic \typecolon \SpendAuthSigPublic$
-      & 392?  & \shortcrossref{ccteddecompressvalidate} \\ \hline
-  $\AuthProvePrivateRepr \typecolon \bitseq{\ScalarLength}$
-      & $\AuthProvePrivate \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\AuthProvePublic = \scalarmult{\AuthProvePrivateRepr}{\AuthProveBase}$
-      & \snarkref{Nullifier integrity}{spendnullifierintegrity}
-      & 750   & \shortcrossref{cctfixedscalarmult} \\ \hline
-  $\AuthSignPublicRepr = \reprJ\Of{\AuthSignPublic \typecolon \GroupJ}$
-      & \snarkref{Diversified address integrity}{spendaddressintegrity}
-      & 392   & \shortcrossref{ccteddecompressvalidate} \\ \hline
-  $\AuthProvePublicRepr = \reprJ\Of{\AuthProvePublic}$
-  \small\todo{spec doesn't say to validate $\AuthProvePublic$ since it's calculated}
-      & \snarkref{Nullifier integrity}{spendnullifierintegrity}
-      & 392   & \shortcrossref{ccteddecompressvalidate} \\ \hline
-  $\InViewingKeyRepr = \ItoLEBSP{251}\big(\CRHivk(\AuthSignPublic, \AuthProvePublic)\kern-0.08em\big)\;\dagger$
-      & \snarkref{Diversified address integrity}{spendaddressintegrity}
-      & 21006 & \shortcrossref{cctblake2s} \\ \hline
-  $\DiversifiedTransmitBase$ is on the curve
-      & $\DiversifiedTransmitBase \typecolon \GroupJ$
-      & 4     & \shortcrossref{cctedvalidate} \\ \hline
-  $\DiversifiedTransmitBase$ is not small order
-      & \snarkref{Small order checks}{spendnonsmall}
-      & 16    & \shortcrossref{cctednonsmallorder} \\ \hline
-  $\DiversifiedTransmitPublic = \scalarmult{\InViewingKeyRepr}{\DiversifiedTransmitBase}$
-      & \snarkref{Diversified address integrity}{spendaddressintegrity}
-      & 3252  & \shortcrossref{cctvarscalarmult} \\ \hline
-  $\vOldRepr \typecolon \bitseq{64}$
-      & $\vOld{} \typecolon \binaryrange{64}$
-      & 64    & \shortcrossref{cctboolean} \\ \hline
-  $\ValueCommitRandRepr \typecolon \bitseq{\ScalarLength}$
-      & $\ValueCommitRand \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\cv = \ValueCommit{\ValueCommitRand}(\vOld{})$
-      & \snarkref{Value commitment integrity}{spendvaluecommitmentintegrity}
-      & 947   & \shortcrossref{ccthomomorphiccommit} \\ \cline{1-1}\cline{3-4}
-  inputize $\cv$
-      &
-      & ?     & \\ \hline
-  $\NoteCommitRandRepr \typecolon \bitseq{\ScalarLength}$
-      & $\NoteCommitRand \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\cm = \NoteCommitSapling{\NoteCommitRand}(\DiversifiedTransmitBase, \DiversifiedTransmitPublic, \vOld{})$
-%      = \WindowedPedersenCommit{\NoteCommitRand}(\vOldRepr \bconcat \DiversifiedTransmitBaseRepr \bconcat \DiversifiedTransmitPublicRepr)
-      & \snarkref{Note commitment integrity}{spendnotecommitmentintegrity}
-      & 1740  & \shortcrossref{cctwindowedcommit} \\ \hline
-  $\cmU = \ExtractJ(\cm)$
-      & \snarkref{Merkle path validity}{spendmerklepathvalidity}
-      & 0     & \\ \cline{1-1}\cline{3-4}
-  \raggedright $\rt'$ is the root of a Merkle tree with leaf $\cmU$, and authentication path $(\TreePath{}, \NotePositionRepr)$
-      &
-      & 32 \mult 1380 & \shortcrossref{cctmerklepath} \\ \cline{1-1}\cline{3-4}
-  $\NotePositionRepr = \ItoLEBSPOf{\MerkleDepthSapling}{\NotePosition}$
-      &
-      & 1     & \shortcrossref{cctmodpack} \\ \cline{1-1}\cline{3-4}
-  if $\vOld{} \neq 0$ then $\rt' = \rt$
-      &
-      & 1     & \shortcrossref{cctcondeq} \\ \cline{1-1}\cline{3-4}
-  inputize $\rt$
-      &
-      & ?     & \\ \hline
-  $\NoteAddressRand = \MixingPedersenHash(\cmOld{}, \NotePosition)$
-      & \snarkref{Nullifier integrity}{spendnullifierintegrity}
-      & 98    & \shortcrossref{cctmixinghash} \\ \cline{1-1}\cline{3-4}
-  $\NoteAddressRandRepr = \reprJ\Of{\NoteAddressRand}$
-  \small\todo{spec doesn't say to validate $\NoteAddressRand$ since it's calculated}
-      &
-      & 392   & \shortcrossref{ccteddecompressvalidate} \\ \cline{1-1}\cline{3-4}
-  $\nfOld{} = \PRFnfSapling{\AuthProvePublicRepr}(\NoteAddressRandRepr)$
-      &
-      & 21006 & \shortcrossref{cctblake2s} \\ \hline
-  \raggedright pack $\nfOld{\barerange{0}{253}}$ and $\nfOld{\barerange{254}{255}}$ into two $\Field$ inputs
-      & input encoding
-      & 2     & \shortcrossref{cctmodpack} \\ \hline
-\end{tabular}
-\end{center}
-
-\vspace{1ex}
-$\dagger$ This is implemented by taking the output of $\BlakeTwos{256}$ as a bit sequence and dropping the most
-significant $5$~bits, not by converting to an integer and back to a bit sequence as literally specified.
-
-\pnote{The implementation represents $\AuthSignRandomizerRepr$, $\AuthProvePrivateRepr$, $\InViewingKeyRepr$,
-$\NoteCommitRandRepr$, $\ValueCommitRandRepr$, and $\vOldRepr$ as bit sequences rather than integers.}
-
-
-\introsection
-\lsubsection{The \SaplingText{} Output circuit}{cctsaplingoutput}
-
-The \Sapling Output \statement is defined in \crossref{outputstatement}.
-
-The primary input is
-\begin{formulae}
-  \item $\oparen\cvNew{} \typecolon \ValueCommitOutput,\\
-         \hparen\cmU \typecolon \MerkleHashSapling,\\
-         \hparen\EphemeralPublic \typecolon \GroupJ\cparen$,
-\end{formulae}
-
-which is encoded as $6$ $\Field$ elements (starting with the fixed element $1$ required by $\Groth$):
-\begin{formulae}
-  \item $[1, \Selectu\Of{\cvNew{}}, \Selectv\Of{\cvNew{}},
-          \Selectu\Of{\EphemeralPublic}, \Selectv\Of{\EphemeralPublic}, \LEBStoIPOf{\MerkleHashLengthSapling}{\cmU}]$
-\end{formulae}
-
-The auxiliary input is
-\begin{formulae}
-  \item $(\DiversifiedTransmitBase \typecolon \GroupJ,\\[0.5ex]
-   \hparen\DiversifiedTransmitPublicRepr \typecolon \ReprJ,\\
-   \hparen\vNew{} \typecolon \ValueType,\\
-   \hparen\ValueCommitRandNew{} \typecolon \binaryrange{\ScalarLength},\\
-   \hparen\NoteCommitRandNew{} \typecolon \binaryrange{\ScalarLength},\\
-   \hparen\EphemeralPrivate \typecolon \binaryrange{\ScalarLength})$
-\end{formulae}
-
-$\ValueCommitOutput$ is of type $\GroupJ$, so we have $\cvNew{}$, $\EphemeralPublic$,
-and $\DiversifiedTransmitBase$ that represent \jubjubCurve points. However,
-\vspace{1ex}
-\begin{itemize}
-  \item $\cvNew{}$ will be constrained to an output of $\ValueCommit{}$;
-  \item $\EphemeralPublic$ will be constrained to
-        $\scalarmult{\EphemeralPrivate}{\DiversifiedTransmitBase}$
-\end{itemize}
-\vspace{-1ex}
-so $\cvNew{}$ and $\EphemeralPublic$ do not need to be explicitly checked
-to be on the curve.
-
-Therefore we have only $\DiversifiedTransmitBase$ that needs to be constrained
-to a valid \jubjubCurve point as described in \crossref{ccteddecompressvalidate}.
-
-\pnote{$\DiversifiedTransmitPublicRepr$ is \emph{not} checked to be a valid
-compressed representation of a \jubjubCurve point.}
-
-
-\introsection
-In order to aid in comparing the implementation with the specification,
-we present the checks needed in the order in which they are implemented
-in the sapling-crypto code:
-
-\begin{center}
-\begin{tabular}{|p{16em}|l|C|l|}
-\hline
-Check & Implements & \heading{Cost} & Reference \\
-\hhline{|=|=|=|=|}
-
-  $\vOldRepr \typecolon \bitseq{64}$
-      & $\vOld{} \typecolon \binaryrange{64}$
-      & 64    & \shortcrossref{cctboolean} \\ \hline
-  $\ValueCommitRandRepr \typecolon \bitseq{\ScalarLength}$
-      & $\ValueCommitRand \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\cv = \ValueCommit{\ValueCommitRand}(\vOld{})$
-      & \snarkref{Value commitment integrity}{outputvaluecommitmentintegrity}
-      & 947   & \shortcrossref{ccthomomorphiccommit} \\ \cline{1-1}\cline{3-4}
-  inputize $\cv$
-      &
-      & ?     & \\ \hline
-  $\DiversifiedTransmitBaseRepr = \reprJ(\DiversifiedTransmitBase \typecolon \GroupJ)$
-      & \snarkref{Note commitment integrity}{outputnotecommitmentintegrity}
-      & 392   & \shortcrossref{ccteddecompressvalidate} \\ \hline
-  $\DiversifiedTransmitBase$ is not small order
-      & \snarkref{Small order checks}{outputnonsmall}
-      & 16    & \shortcrossref{cctednonsmallorder} \\ \hline
-  $\EphemeralPrivateRepr \typecolon \bitseq{\ScalarLength}$
-      & $\EphemeralPrivate \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\EphemeralPublic = \scalarmult{\EphemeralPrivateRepr}{\DiversifiedTransmitBase}$
-      & \snarkref{Ephemeral public key integrity}{outputepkintegrity}
-      & 3252  & \shortcrossref{cctvarscalarmult} \\ \hline
-  inputize $\EphemeralPublic$
-      &
-      & ?     & \\ \hline
-  $\DiversifiedTransmitPublicRepr \typecolon \ReprJ$
-      & $\DiversifiedTransmitPublicRepr \typecolon \ReprJ$
-      & 256   & \shortcrossref{cctboolean} \\ \hline
-  $\NoteCommitRandRepr \typecolon \bitseq{\ScalarLength}$
-      & $\NoteCommitRand \typecolon \binaryrange{\ScalarLength}$
-      & 252   & \shortcrossref{cctboolean} \\ \hline
-  $\cm = \NoteCommitSapling{\NoteCommitRand}(\DiversifiedTransmitBase, \DiversifiedTransmitPublic, \vOld{})$
-%      = \WindowedPedersenCommit{\NoteCommitRand}(\vOldRepr \bconcat \DiversifiedTransmitBaseRepr \bconcat \DiversifiedTransmitPublicRepr)
-      & \snarkref{Note commitment integrity}{outputnotecommitmentintegrity}
-      & 1740  & \shortcrossref{cctwindowedcommit} \\ \hline
-  pack inputs
-      &
-      & ?     & \\ \hline %\shortcrossref{cctpackinputs}
-\end{tabular}
-\end{center}
-
-\pnote{The implementation represents $\EphemeralPrivateRepr$, $\DiversifiedTransmitPublicRepr$,
-$\NoteCommitRandRepr$, $\ValueCommitRandRepr$, and $\vOldRepr$ as bit sequences rather than integers.}
-} %notsprout
-
-\notsprout{
-\lsection{Batching Optimizations}{batching}
-
-\lsubsection{\RedDSAText{} batch verification}{reddsabatchverify}
-
-The reference verification algorithm for $\RedDSA$ signatures is defined in \crossref{concretereddsa}.
+The reference verification algorithm for $\RedDSA$ signatures is defined in \crossref{reddsa}.
 
 Let the $\RedDSA$ parameters $\GroupG{}$ (defining a subgroup $\SubgroupG{}$ of order $\ParamG{r}$,
 a cofactor $\ParamG{h}$, a group operation $+$, an additive identity $\ZeroG{}$, a bit-length $\ellG{}$,
@@ -3456,20 +2898,17 @@ $\RedDSAHashLength \typecolon \Nat$; $\RedDSAHash \typecolon \byteseqs \rightarr
 and the derived hash function $\RedDSAHashToScalar \typecolon \byteseqs \rightarrow \Field{\ParamG{r}}$
 be as defined in that section.
 
-\vspace{2ex}
-Implementations \MAY alternatively use the optimized procedure described in this section to perform
+Implementations can alternatively use the optimized procedure described in this section to perform
 faster verification of a batch of signatures, i.e.\ to determine whether all signatures in a batch are valid.
-Its input is a sequence of $N$ \defining{\sigBatchEntries}, each of which is a
+Its input is a sequence of $N$ \emph{signature batch entries}, each of which is a
 (public key, message, signature) triple.
 
-\vspace{2ex}
 Let $\LEOStoBSP{}$, $\LEOStoIP{}$, and $\LEBStoOSP{}$ be as defined in \crossref{endian}.
 
 Define $\RedDSABatchEntry := \RedDSAPublic \times \RedDSAMessage \times \RedDSASignature$.
 
-\introsection
-Define $\RedDSABatchVerify \typecolon (\Entry{\barerange{0}{N-1}} \typecolon \typeexp{\RedDSABatchEntry}{N})
-                                      \rightarrow \bit$ as:
+Define $\RedDSABatchValidate \typecolon (\Entry{\barerange{0}{N-1}} \typecolon \typeexp{\RedDSABatchEntry}{N})
+                                        \rightarrow \bit$ as:
 \begin{algorithm}
   \item For each $j \in \range{0}{N-1}$:
   \item \tab Let $(\vk_j, M_j, \sigma_j) = \Entry{j}$.
@@ -3477,7 +2916,7 @@ Define $\RedDSABatchVerify \typecolon (\Entry{\barerange{0}{N-1}} \typecolon \ty
              let $\RedDSAReprS{j}$ be the remaining $\ceiling{\bitlength(\ParamG{r})/8}$ bytes.
   \item \tab Let $\RedDSASigR{j} = \abstG{}\big(\LEOStoBSP{\ellG{}}(\RedDSAReprR{j})\kern-0.12em\big)$, and
              let $\RedDSASigS{j} = \LEOStoIP{8 \mult \length(\RedDSAReprS{j})}(\RedDSAReprS{j})$.
-  \item \tab Let $\vkBytes{j} = \LEBStoOSPOf{\ellG{}}{\reprG{}(\vk_j)\kern-0.1em}$.
+  \item \tab Let $\vkBytes{j} = \LEBStoOSP{\ellG{}}(\reprG{}(\vk_j))$.
   \item \tab Let $\RedDSASigc{j} = \RedDSAHashToScalar(\RedDSAReprR{j} \bconcat \vkBytes{j} \bconcat M_j)$.
         \vspace{1ex}
   \item \tab Choose random $z_j \typecolon \Fieldstar{\ParamG{r}} \leftarrowR \range{1}{2^{128}-1}$.
@@ -3497,7 +2936,7 @@ Define $\RedDSABatchVerify \typecolon (\Entry{\barerange{0}{N-1}} \typecolon \ty
         otherwise $0$.
 \end{algorithm}
 
-The $z_j$ values \MUST be chosen independently of the \sigBatchEntries.
+The $z_j$ values must be chosen independently of the signature batch entries.
 
 The performance benefit of this approach arises partly from replacing the per-signature
 scalar multiplication of the base $\GenG{}$ with one such multiplication per batch,
@@ -3505,40 +2944,33 @@ and partly from using an efficient algorithm for multiscalar multiplication such
 as Pippinger's method \cite{Bernstein2001} or the Bos--Coster method \cite{deRooij1995}, as explained in
 \cite[section 5]{BDLSY2012}.
 
-\pnote{Spend authorization signatures (\crossref{concretespendauthsig}) and
-binding signatures (\crossref{concretebindingsig}) use different bases $\raisedstrut\GenG{}$.
 It is straightforward to adapt the above procedure to handle multiple bases;
-there will be one
+there is one
 $\Bigscalarmult{\ssum{j}{}{(z_j \mult \RedDSASigS{j}) \pmod{\ParamG{r}}}}{\Generator}$ term for each base $\Generator$.
 The benefit of this relative to using separate batches is that the multiscalar multiplication
-can be extended across a larger batch.} %pnote
+can be extended across a larger batch.
 
-} %notsprout
 
-\notsprout{
-\lsubsection{\GrothText{} batch verification}{grothbatchverify}
+\subsection{Groth16 batch verification} \label{grothbatchverify}
 
-The reference verification algorithm for $\Groth$ proofs is defined in \crossref{groth}.
+TODO: reference the single verification algorithm.
 
 Let $\ParamS{q}$, $\ParamS{r}$, $\SubgroupS{1, 2, T}$, $\SubgroupSstar{1, 2, T}$, $\GenS{1, 2, T}$,
-$\OneS$, and $\PairingS$ be as defined in \crossref{blspairing}.
+$\OneS$, and $\PairingS$ be as defined in \crossref{representedpairing}.
 
 Define $\MillerLoopS \typecolon \SubgroupS{1} \times \SubgroupS{2} \rightarrow \SubgroupS{T}$
 and $\FinalExpS \typecolon \SubgroupS{T} \rightarrow \SubgroupS{T}$ to be the Miller loop and
 final exponentiation respectively of the $\PairingS$ pairing computation, so that:
-\vspace{0.5ex}
 \begin{formulae}
-  \item $\PairingS\Of{P, Q} = \FinalExpS\Of{\MillerLoopS\Of{P, Q}\kern 0.05em}$
+  \item $\PairingS(P, Q) = \FinalExpS(\MillerLoopS(P, Q))$
 \end{formulae}
-\vspace{-1ex}
-where $\FinalExpS\Of{R} = R^{t}$ for some fixed $t$.
+where $\FinalExpS(R) = R^{t}$ for some fixed $t$.
 
-\vspace{2ex}
 Define $\GrothSProof := \SubgroupSstar{1} \times \SubgroupSstar{2} \times \SubgroupSstar{1}$.
 
 A $\GrothS$ proof consists of a tuple $(\Proof{A}, \Proof{B}, \Proof{C}) \typecolon \GrothSProof$.
 
-Verification of a single $\GrothS$ proof against an instance encoded as $a_{\barerange{0}{\ell}} \typecolon \typeexp{\Field}{\ell+1}$
+Verification of a single $\GrothS$ proof against an instance encoded as $a_{\barerange{0}{\ell}} \typecolon \typeexp{\Field{}}{\ell+1}$
 requires checking the equation
 \vspace{-0.5ex}
 \begin{formulae}
@@ -3546,34 +2978,28 @@ requires checking the equation
                                            \PairingS\Big(\ssum{i=0}{\ell}{\scalarmult{a_i}{\Psi_i}}, \Gamma\Big) \mult Y$
 \end{formulae}
 \vspace{-1ex}
-where $\Delta = \scalarmult{\delta}{\GenS{2}}, \Gamma = \scalarmult{\gamma}{\GenS{2}}$, $Y = \scalarmult{\alpha \smult \beta}{\GenS{T}}$,
-and $\Psi_i = \Bigscalarmult{\frac{\beta \smult u_i(x) + \alpha \smult v_i(x) + w_i(x)}{\gamma}}{\GenS{1}}$
+where $\Delta = \scalarmult{\delta}{\GenS{2}}, \Gamma = \scalarmult{\gamma}{\GenS{2}}$, $Y = \scalarmult{\alpha \mult \beta}{\GenS{T}}$,
+and $\Psi_i = \Bigscalarmult{\frac{\beta \mult u_i(x) + \alpha \mult v_i(x) + w_i(x)}{\gamma}}{\GenS{1}}$
 for $i \in \range{0}{\ell}$ are elements of the verification key, as described (with slightly different notation)
 in \cite[section 3.2]{Groth2016}.
 
-\introlist
-\vspace{1ex}
 This can be written as:
 \begin{formulae}
   \item $\PairingS(\Proof{A}, -\Proof{B}) \mult \PairingS(\Proof{C}, \Delta) \mult
          \PairingS\Big(\ssum{i=0}{\ell}{\scalarmult{a_i}{\Psi_i}}, \Gamma\Big) \mult Y = \OneS$.
 \end{formulae}
 
-\introlist
 Raising to the power of random $z \neq 0$ gives:
 \begin{formulae}
-  \item $\PairingS\Of{\scalarmult{z}{\Proof{A}}, -\Proof{B}} \mult \PairingS\Of{\scalarmult{z}{\Proof{C}}, \Delta} \mult
+  \item $\PairingS(\scalarmult{z}{\Proof{A}}, -\Proof{B}) \mult \PairingS(\scalarmult{z}{\Proof{C}}, \Delta) \mult
          \PairingS\Big(\ssum{i=0}{\ell}{\scalarmult{z \mult a_i}{\Psi_i}}, \Gamma\Big) \mult Y^z = \OneS$.
 \end{formulae}
 
-\vspace{1ex}
 This justifies the following optimized procedure for performing faster verification of a batch of $\GrothS$ proofs.
-Implementations \MAY use this procedure to determine whether all proofs in a batch are valid.
+Implementations can use this procedure to determine whether all proofs in a batch are valid.
 
-\vspace{1ex}
 Define $\GrothSBatchEntry := \GrothSProof \times \GrothSPrimaryInput$.
 
-\introlist
 Define $\GrothSBatchVerify \typecolon (\Entry{\barerange{0}{N-1}} \typecolon \typeexp{\GrothSBatchEntry}{N})
                                        \rightarrow \bit$ as:
 \begin{algorithm}
@@ -3582,23 +3008,23 @@ Define $\GrothSBatchVerify \typecolon (\Entry{\barerange{0}{N-1}} \typecolon \ty
   \item \tab Choose random $z_j \typecolon \Fieldstar \leftarrowR \range{1}{2^{128}-1}$.
   \item \vspace{-2ex}
   \item \begin{tabular}{@{}l@{\;}l}
-        Let $\Accum{AB}$       &$= \sproduct{j=0}{N-1}{\MillerLoopS\Of{\scalarmult{z_j}{\Proof{j,A}}, -\Proof{j,B}}}$\,. \\[1.5ex]
+        Let $\Accum{AB}$       &$= \sproduct{j=0}{N-1}{\MillerLoopS(\scalarmult{z_j}{\Proof{j,A}}, -\Proof{j,B}})$. \\[1.5ex]
         Let $\Accum{\Delta}$   &$= \ssum{j=0}{N-1}{\scalarmult{z_j}{\Proof{j,C}}}$. \\[1.5ex]
-        Let $\Accum{\Gamma,i}$ &$= \ssum{j=0}{N-1}{(z_j\kern-0.08em \mult a_{j,i}) \pmod}$ for $i \in \range{0}{\ell}$. \\[1.5ex]
-        Let $\Accum{Y}$        &$= \ssum{j=0}{N-1}{z_j \pmod}$. \\[2.5ex]
+        Let $\Accum{\Gamma,i}$ &$= \ssum{j=0}{N-1}{(z_j\kern-0.08em \mult a_{j,i}) \pmod{\ParamS{r}}}$ for $i \in \range{0}{\ell}$. \\[1.5ex]
+        Let $\Accum{Y}$        &$= \ssum{j=0}{N-1}{z_j \pmod{\ParamS{r}}}$. \\[2.5ex]
         \end{tabular}
   \item Return $1$ if
         \vspace{1ex}
         \begin{formulae}
-          \item $\FinalExpS\Of{\!\Accum{AB} \mult \MillerLoopS\big(\Accum{\Delta}, \Delta\big) \mult
-                               \MillerLoopS\Big(\ssum{i=0}{\ell}{\scalarmult{\Accum{\Gamma,i}}{\Psi_i}}, \Gamma\Big)\kern-0.25em}
+          \item $\FinalExpS\left(\Accum{AB} \mult \MillerLoopS\big(\Accum{\Delta}, \Delta\big) \mult
+                                 \MillerLoopS\Big(\ssum{i=0}{\ell}{\scalarmult{\Accum{\Gamma,i}}{\Psi_i}}, \Gamma\Big)\right)
                  \mult Y^{\Accum{Y}} = \OneS$,
         \end{formulae}
         \vspace{-2ex}
         otherwise $0$.
 \end{algorithm}
 
-The $z_j$ values \MUST be chosen independently of the \proofBatchEntries.
+The $z_j$ values must be chosen independently of the proof batch entries.
 
 The performance benefit of this approach arises from computing two of the three Miller loops, and
 the final exponentation, per batch instead of per proof. For the multiplications by $z_j$, an efficient
@@ -3606,13 +3032,11 @@ algorithm for multiscalar multiplication such as Pippinger's method \cite{Bernst
 method \cite{deRooij1995} may be used.
 
 \pnote{
-Spend proofs (of the \statement in \crossref{spendstatement}) and output proofs (of the \statement
-in \crossref{outputstatement}) use different verification keys, with different parameters $\Delta$, $\Gamma$,
-$Y$, and $\Psi_{\barerange{0}{\ell}}$. It is straightforward to adapt the above procedure to handle multiple
+It is straightforward to adapt the above procedure to handle multiple
 verification keys; the accumulator variables $\Accum{\Delta}$, $\Accum{\Gamma,i}$, and $\Accum{Y}$ are duplicated,
 with one term in the verification equation for each variable, while $\Accum{AB}$ is shared.
 
-Neglecting multiplications in $\SubgroupS{T}$ and $\Field$, and other trivial operations,
+Neglecting multiplications in $\SubgroupS{T}$ and $\Field{}$, and other trivial operations,
 the cost of batched verification is therefore
 \begin{itemize}
   \item for each proof: the cost of decoding the proof representation to the form $\GrothSProof$,
