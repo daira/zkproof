@@ -12,6 +12,7 @@
 *.bcf
 *.run.xml
 *.dvi
+*.thm
 
 # Temporary files
 .emacs.desktop
@@ -21,4 +22,4 @@
 *.save.*
 
 .Makefile.uptodate
-spec.pdf
+# *.pdf
